@@ -8,7 +8,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
-#include "IPHCFlatTree/FlatTreeProducer/interface/FlatTree.hh"
+#include "FlatTree/FlatTreeProducer/interface/FlatTree.hh"
 
 #define DEFVAL -666
 

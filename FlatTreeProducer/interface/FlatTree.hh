@@ -13,7 +13,7 @@ typedef std::map<std::string, std::map<std::string, boost::any> >  t_map;
 
 #define DEFVAL -666
 
-#include "IPHCFlatTree/FlatTreeProducer/interface/Helper.hh"
+#include "FlatTree/FlatTreeProducer/interface/Helper.hh"
 
 class FlatTree
 {
