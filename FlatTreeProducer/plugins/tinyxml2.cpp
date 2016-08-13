@@ -21,7 +21,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#include "IPHCFlatTree/FlatTreeProducer/interface/tinyxml2.h"
+#include "FlatTree/FlatTreeProducer/interface/tinyxml2.h"
 
 #include <new>		// yes, this one new style header, is in the Android SDK.
 #   ifdef ANDROID_NDK

@@ -1,4 +1,4 @@
-#include "IPHCFlatTree/FlatTreeProducer/interface/FlatTree.hh"
+#include "FlatTree/FlatTreeProducer/interface/FlatTree.hh"
 
 FlatTree::FlatTree(TTree* _tree){
    tree = _tree;

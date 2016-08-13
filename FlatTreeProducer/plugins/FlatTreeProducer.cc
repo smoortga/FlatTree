@@ -40,10 +40,10 @@
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
-#include "IPHCFlatTree/FlatTreeProducer/interface/tinyxml2.h"
+#include "FlatTree/FlatTreeProducer/interface/tinyxml2.h"
 
-#include "IPHCFlatTree/FlatTreeProducer/interface/FlatTree.hh"
-#include "IPHCFlatTree/FlatTreeProducer/interface/MCTruth.hh"
+#include "FlatTree/FlatTreeProducer/interface/FlatTree.hh"
+#include "FlatTree/FlatTreeProducer/interface/MCTruth.hh"
 
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 
@@ -852,7 +852,7 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     // ###############
     //
     const char* cmssw_base = std::getenv("CMSSW_BASE");
-    std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/lepMVA/";
+    std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/FlatTree/FlatTreeProducer/data/lepMVA/";
     mu_reader_b      = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/mu_eta_b_BDTG.weights.xml" , "mu");
     mu_reader_e      = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/mu_eta_e_BDTG.weights.xml" , "mu");
     ele_reader_cb    = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/el_eta_cb_BDTG.weights.xml", "ele");
@@ -3585,7 +3585,7 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
     jecUnc = new JetCorrectionUncertainty(JetCorPar);*/
 
     const char* cmssw_base = std::getenv("CMSSW_BASE");
-    std::string JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall15_25nsV2_MC/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt";
+    std::string JECUncertaintyPath = std::string(cmssw_base)+"/src/FlatTree/FlatTreeProducer/data/jecFiles/Fall15_25nsV2_MC/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt";
     jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
 }
 

@@ -1,4 +1,4 @@
-#include "IPHCFlatTree/FlatTreeProducer/interface/MCTruth.hh"
+#include "FlatTree/FlatTreeProducer/interface/MCTruth.hh"
 
 void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
 			       const edm::EventSetup& iSetup,
