@@ -1272,66 +1272,20 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         }
     }
 
-    // ##################################################
-    // #   __  __  ____     _____           _   _       #
-    // #  |  \/  |/ ___|   |_   _| __ _   _| |_| |__    #
-    // #  | |\/| | |         | || '__| | | | __| '_ \   #
-    // #  | |  | | |___      | || |  | |_| | |_| | | |  #
-    // #  |_|  |_|\____|     |_||_|   \__,_|\__|_| |_|  #
-    // #                                                #
-    // ##################################################
-    //
-    bool do_mc_truth_tth = ftree->doWrite("mc_truth_tth");
-    bool do_mc_truth_ttz = ftree->doWrite("mc_truth_ttz");
-    bool do_mc_truth_ttw = ftree->doWrite("mc_truth_ttw");
-    bool do_mc_truth_tzq = ftree->doWrite("mc_truth_tzq");
-    bool do_mc_truth_thq = ftree->doWrite("mc_truth_thq");
+    bool do_gen_all = ftree->doWrite("gen_all");
 
-    MCTruth *mc_truth = new MCTruth();
-
-    bool reqMCTruth = 0;
-    if( (
-                do_mc_truth_tth ||
-                do_mc_truth_tzq ||
-                do_mc_truth_ttz ||
-                do_mc_truth_ttw ||
-                do_mc_truth_thq
-        ) &&
-            !isData_ )
+   MCTruth *mc_truth = new MCTruth();
+   
+    if( do_gen_all &&
+	!isData_ )
     {
         mc_truth->Init(*ftree);
-        if( do_mc_truth_tth ) mc_truth->fillTTHSignalGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-        if( do_mc_truth_ttz ) mc_truth->fillTTZSignalGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-        if( do_mc_truth_ttw ) mc_truth->fillTTWSignalGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-        if( do_mc_truth_tzq ) mc_truth->fillTZQSignalGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-        if( do_mc_truth_thq ) mc_truth->fillTHQSignalGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-        reqMCTruth = 1;
-    }
-
-    bool do_gen_all = ftree->doWrite("gen_all");
-    bool do_gen_stop_mass = ftree->doWrite("gen_stop_mass");
-    bool do_gen_stop = ftree->doWrite("gen_stop");
-
-    if( do_gen_all &&
-            !isData_ )
-    {
-        if( !reqMCTruth ) mc_truth->Init(*ftree);
         mc_truth->fillGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-	reqMCTruth = 1;
-	if(do_gen_stop_mass)
-    		mc_truth->fillStopNeutralinoMass(iEvent,iSetup,*ftree,genParticlesHandle);
-    }
-    if( !do_gen_all && do_gen_stop && !isData_){
-        if(!reqMCTruth ) mc_truth->Init(*ftree);
-        mc_truth->fillTopStopDecayChain(iEvent,iSetup,*ftree,genParticlesHandle);
-	reqMCTruth = 1;
-    
     }
     if( !isData_ )
     {
-        if( !reqMCTruth ) mc_truth->Init(*ftree);
+        mc_truth->Init(*ftree);
         mc_truth->fillGenPV(iEvent,iSetup,*ftree,genParticlesHandle);
-        reqMCTruth = 1;
     }
 
     // #########################################
