@@ -16,5 +16,7 @@ cd -
 
 git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate
 
+git cms-merge-topic ikrav:egm_id_80X_v1
+
 scram b -j10
 ```
