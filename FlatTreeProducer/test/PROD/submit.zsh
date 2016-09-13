@@ -2,7 +2,7 @@
 
 slist="list.txt"
 pset="crabConfigTemplate.py"
-ver="Medusa-patch1-v20160913"
+ver="Sailfish-patch1-v20160913"
 prodv="/store/user/kskovpen/FlatTree/${ver}/"
 
 rm -f crabConfig.py*
