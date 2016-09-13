@@ -1,12 +1,3 @@
-<preselection>
-    <info activate="1"></info>
-    <obj name="muon" min="0"></obj>
-    <obj name="electron" min="0"></obj>
-    <obj name="lepton" min="1"></obj>
-    <obj name="jet" min="0"></obj>
-    <obj name="MET" min="0"></obj>
-</preselection>
-
 <variables>
     <var name="ev_run" save="1" desc="Run id"></var>
     <var name="ev_id" save="1" desc="Event id"></var>
@@ -143,12 +134,6 @@
     <var name="mc_pu_sumpT_highpT" save="1" mc="1"></var>
     <var name="mc_pu_ntrks_lowpT" save="1" mc="1"></var>
     <var name="mc_pu_ntrks_highpT" save="1" mc="1"></var>
-    <var name="mc_truth_p4" save="0" mc="1"></var>
-    <var name="mc_truth_tth" save="0" mc="1"></var>
-    <var name="mc_truth_ttz" save="0" mc="1"></var>
-    <var name="mc_truth_ttw" save="0" mc="1"></var>
-    <var name="mc_truth_tzq" save="0" mc="1"></var>
-    <var name="mc_truth_thq" save="0" mc="1"></var>
     <var name="trigger_n" save="1"></var>
     <var name="trigger" save="1"></var>
     <var name="trigger_name" save="1"></var>
@@ -260,8 +245,6 @@
     <var name="el_eEleClusterOverPout" save="0"></var>
     <var name="el_deltaEtaEleClusterTrackAtCalo" save="0"></var>
     <var name="el_deltaPhiEleClusterTrackAtCalo" save="0"></var>
-    <var name="el_miniIso" save="1"></var>
-    <var name="el_miniIsoTTH" save="1"></var>
     <var name="el_vx" save="1"></var>
     <var name="el_vy" save="1"></var>
     <var name="el_vz" save="1"></var>
@@ -342,21 +325,6 @@
     <var name="el_tightMVAId" save="1"></var>
     <var name="el_mediumStopID" save="1"></var>
     <var name="el_vetoStopID" save="1"></var>
-    <var name="el_lepMVA" save="1"></var>
-    <var name="el_lepMVA_Moriond16" save="1"></var>
-    <var name="el_lepMVA_pt" save="1"></var>   
-    <var name="el_lepMVA_eta" save="1"></var>
-    <var name="el_lepMVA_miniRelIsoCharged" save="1"></var>
-    <var name="el_lepMVA_miniRelIsoNeutral" save="1"></var>
-    <var name="el_lepMVA_jetPtRatio" save="1"></var>
-    <var name="el_lepMVA_jetPtRelv2" save="1"></var>
-    <var name="el_lepMVA_jetBTagCSV" save="1"></var>
-    <var name="el_lepMVA_sip3d" save="1"></var>
-    <var name="el_lepMVA_dxy" save="1"></var>
-    <var name="el_lepMVA_dz" save="1"></var>
-    <var name="el_lepMVA_mvaId" save="1"></var>
-    <var name="el_lepMVA_jetNDauChargedMVASel" save="1"></var>
-    <var name="el_jetConePt_ttH" save="1"></var>
     <var name="el_hasMatchedConversion" save="1"></var>
     <var name="el_expectedMissingInnerHits" save="1"></var>
     <var name="el_hasMCMatch" save="1" mc="1"></var>
@@ -443,8 +411,6 @@
     <var name="mu_pfSumIso04_sumPUPt" save="0"></var>
     <var name="mu_numberOfMatches" save="1"></var>
     <var name="mu_numberOfMatchedStations" save="1"></var>    
-    <var name="mu_miniIso" save="1"></var>
-    <var name="mu_miniIsoTTH" save="1"></var>
     <var name="mu_isGlobalMuon" save="1"></var>
     <var name="mu_isTrackerMuon" save="1"></var>
     <var name="mu_isStandAloneMuon" save="1"></var>
@@ -636,21 +602,6 @@
     <var name="mu_innerTrack_numberOfOuterHits" save="0"></var>
     <var name="mu_innerTrack_validFraction" save="1"></var>
     <var name="mu_type" save="1"></var>
-    <var name="mu_lepMVA" save="1"></var>      
-    <var name="mu_lepMVA_Moriond16" save="1"></var>    
-    <var name="mu_lepMVA_pt" save="1"></var>
-    <var name="mu_lepMVA_eta" save="1"></var>
-    <var name="mu_lepMVA_miniRelIsoCharged" save="1"></var>
-    <var name="mu_lepMVA_miniRelIsoNeutral" save="1"></var>
-    <var name="mu_lepMVA_jetPtRatio" save="1"></var>
-    <var name="mu_lepMVA_jetPtRelv2" save="1"></var>
-    <var name="mu_lepMVA_jetBTagCSV" save="1"></var>
-    <var name="mu_lepMVA_sip3d" save="1"></var>
-    <var name="mu_lepMVA_dxy" save="1"></var>
-    <var name="mu_lepMVA_dz" save="1"></var>
-    <var name="mu_lepMVA_mvaId" save="1"></var>
-    <var name="mu_lepMVA_jetNDauChargedMVASel" save="1"></var>
-    <var name="mu_jetConePt_ttH" save="1"></var>
     <var name="mu_hasMCMatch" save="1" mc="1"></var>
     <var name="mu_gen_pt" save="1" mc="1"></var>
     <var name="mu_gen_eta" save="1" mc="1"></var>
@@ -697,15 +648,12 @@
     <var name="tau_byLooseCombinedIsolationDeltaBetaCorr3Hits" save="1"></var>
     <var name="tau_byMediumCombinedIsolationDeltaBetaCorr3Hits" save="1"></var>
     <var name="tau_byTightCombinedIsolationDeltaBetaCorr3Hits" save="1"></var>
-
     <var name="tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
     <var name="tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
     <var name="tau_byTightIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
     <var name="tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
-
     <var name="tau_againstMuonLoose3" save="1"></var>
     <var name="tau_againstMuonTight3" save="1"></var>    
-
     <var name="tau_pfEssential_jet_pt" save="1"></var>
     <var name="tau_pfEssential_jet_eta" save="1"></var>
     <var name="tau_pfEssential_jet_phi" save="1"></var>
@@ -760,7 +708,6 @@
     <var name="jet_pileupJetId" save="1"></var>
     <var name="jet_looseJetID" save="1"></var>
     <var name="jet_tightJetID" save="1"></var>
-    <var name="jet_qgtag" save="1"></var>
     <var name="jet_hasGenJet" save="1" mc="1"></var>
     <var name="jet_genJet_pt" save="1" mc="1"></var>
     <var name="jet_genJet_eta" save="1" mc="1"></var>
@@ -788,174 +735,6 @@
     <var name="genJet_invisibleEnergy" save="1" mc="1"></var>
     <var name="genJet_auxiliaryEnergy" save="1" mc="1"></var>
     <var name="genJet_flavour" save="1" mc="1"></var>
-    <var name="jetPuppi_n" save="0"></var>
-    <var name="jetPuppi_pt" save="0"></var>
-    <var name="jetPuppi_eta" save="0"></var>
-    <var name="jetPuppi_phi" save="0"></var>
-    <var name="jetPuppi_m" save="0"></var>
-    <var name="jetPuppi_E" save="0"></var>
-    <var name="jetPuppi_ntrk" save="0"></var>
-    <var name="jetPuppi_JBP" save="0"></var>
-    <var name="jetPuppi_JP" save="0"></var>
-    <var name="jetPuppi_TCHP" save="0"></var>
-    <var name="jetPuppi_TCHE" save="0"></var>
-    <var name="jetPuppi_SSVHE" save="0"></var>
-    <var name="jetPuppi_SSVHP" save="0"></var>
-    <var name="jetPuppi_CMVA" save="0"></var>
-    <var name="jetPuppi_CSVv2" save="0"></var>
-    <var name="jetPuppi_partonFlavour" save="0"></var>
-    <var name="jetPuppi_hadronFlavour" save="0"></var>
-    <var name="jetPuppi_neutralHadronEnergy" save="0"></var>
-    <var name="jetPuppi_neutralEmEnergy" save="0"></var>
-    <var name="jetPuppi_chargedHadronEnergy" save="0"></var>
-    <var name="jetPuppi_chargedEmEnergy" save="0"></var>
-    <var name="jetPuppi_electronEnergy" save="0"></var>
-    <var name="jetPuppi_muonEnergy" save="0"></var>
-    <var name="jetPuppi_photonEnergy" save="0"></var>
-    <var name="jetPuppi_chargedMultiplicity" save="0"></var>
-    <var name="jetPuppi_neutralMultiplicity" save="0"></var>
-    <var name="jetPuppi_chargedHadronMultiplicity" save="0"></var>    
-    <var name="jetPuppi_jecFactorUncorrected" save="0"></var>
-    <var name="jetPuppi_jecFactorL1FastJet" save="0"></var>
-    <var name="jetPuppi_jecFactorL2Relative" save="0"></var>
-    <var name="jetPuppi_jecFactorL3Absolute" save="0"></var>    
-    <var name="jetPuppi_pileupJetId" save="0"></var>    
-    <var name="jetPuppi_hasGenJet" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_pt" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_eta" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_phi" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_m" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_E" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_status" save="0" mc="1"></var>
-    <var name="jetPuppi_genJet_id" save="0" mc="1"></var>
-    <var name="jetPuppi_hasGenParton" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_pt" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_eta" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_phi" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_m" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_E" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_status" save="0" mc="1"></var>
-    <var name="jetPuppi_genParton_id" save="0" mc="1"></var>
-    <var name="ak8jet_n" save="0"></var>
-    <var name="ak8jet_pt" save="0" ></var>
-    <var name="ak8jet_eta" save="0"></var>
-    <var name="ak8jet_phi" save="0"></var>
-    <var name="ak8jet_m" save="0"></var>
-    <var name="ak8jet_E" save="0"></var>
-    <var name="ak8jet_tau1" save="0"></var>
-    <var name="ak8jet_tau2" save="0"></var>
-    <var name="ak8jet_tau3" save="0"></var>
-    <var name="ak8jet_softdrop_mass" save="0"></var>
-    <var name="ak8jet_trimmed_mass" save="0"></var>
-    <var name="ak8jet_pruned_mass" save="0"></var>
-    <var name="ak8jet_filtered_mass" save="0"></var>
-    <var name="ak8jet_minMass" save="0"></var>
-    <var name="ak8jet_topMass" save="0"></var>
-    <var name="ak8jet_nSubJets" save="0"></var>
-    <var name="ak8jetntrk" save="0"></var>
-    <var name="ak8jet_CSVv2" save="0"></var>
-    <var name="ak8jet_partonFlavour" save="0"></var>
-    <var name="ak8jet_hadronFlavour" save="0"></var>
-    <var name="ak8jet_neutralHadronEnergy" save="0"></var>
-    <var name="ak8jet_neutralEmEnergy" save="0"></var>
-    <var name="ak8jet_chargedHadronEnergy" save="0"></var>
-    <var name="ak8jet_chargedEmEnergy" save="0"></var>
-    <var name="ak8jet_electronEnergy" save="0"></var>
-    <var name="ak8jet_muonEnergy" save="0"></var>
-    <var name="ak8jet_photonEnergy" save="0"></var>
-    <var name="ak8jet_jetArea" save="0"></var>
-    <var name="ak8jet_chargedMultiplicity" save="0"></var>
-    <var name="ak8jet_neutralMultiplicity" save="0"></var>
-    <var name="ak8jet_chargedHadronMultiplicity" save="0"></var>
-    <var name="ak8jet_jecFactorUncorrected" save="0"></var>
-    <var name="ak8jet_jecFactorL1FastJet" save="0"></var>
-    <var name="ak8jet_jecFactorL2Relative" save="0"></var>
-    <var name="ak8jet_jecFactorL3Absolute" save="0"></var>
-    <var name="ak8jet_pileupJetId" save="0"></var>
-    <var name="ak8jet_looseJetID" save="0"></var>
-    <var name="ak8jet_tightJetID" save="0"></var>
-    <var name="ak8jet_hasGenJet" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_pt" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_eta" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_phi" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_m" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_E" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_status" save="0" mc="1"></var>
-    <var name="ak8jet_genJet_id" save="0" mc="1"></var>
-    <var name="ak8jet_hasGenParton" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_pt" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_eta" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_phi" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_m" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_E" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_status" save="0" mc="1"></var>
-    <var name="ak8jet_genParton_id" save="0" mc="1"></var>
-    <var name="ak10jet_n" save="0"></var>
-    <var name="ak10jet_pt" save="0" ></var>
-    <var name="ak10jet_eta" save="0"></var>
-    <var name="ak10jet_phi" save="0"></var>
-    <var name="ak10jet_m" save="0"></var>
-    <var name="ak10jet_E" save="0"></var>
-    <var name="ak10jet_tau1" save="0"></var>
-    <var name="ak10jet_tau2" save="0"></var>
-    <var name="ak10jet_tau3" save="0"></var>
-    <var name="ak10jet_softdrop_mass" save="0"></var>
-    <var name="ak10jet_trimmed_mass" save="0"></var>
-    <var name="ak10jet_pruned_mass" save="0"></var>
-    <var name="ak10jet_filtered_mass" save="0"></var>
-    <var name="ak10jet_minMass" save="0"></var>
-    <var name="ak10jet_topMass" save="0"></var>
-    <var name="ak10jet_nSubJets" save="0"></var>
-    <var name="ak10jetntrk" save="0"></var>
-    <var name="ak10jet_CSVv2" save="0"></var>
-    <var name="ak10jet_partonFlavour" save="0"></var>
-    <var name="ak10jet_hadronFlavour" save="0"></var>
-    <var name="ak10jet_neutralHadronEnergy" save="0"></var>
-    <var name="ak10jet_neutralEmEnergy" save="0"></var>
-    <var name="ak10jet_chargedHadronEnergy" save="0"></var>
-    <var name="ak10jet_chargedEmEnergy" save="0"></var>
-    <var name="ak10jet_electronEnergy" save="0"></var>
-    <var name="ak10jet_muonEnergy" save="0"></var>
-    <var name="ak10jet_photonEnergy" save="0"></var>
-    <var name="ak10jet_jetArea" save="0"></var>
-    <var name="ak10jet_chargedMultiplicity" save="0"></var>
-    <var name="ak10jet_neutralMultiplicity" save="0"></var>
-    <var name="ak10jet_chargedHadronMultiplicity" save="0"></var>
-    <var name="ak10jet_jecFactorUncorrected" save="0"></var>
-    <var name="ak10jet_jecFactorL1FastJet" save="0"></var>
-    <var name="ak10jet_jecFactorL2Relative" save="0"></var>
-    <var name="ak10jet_jecFactorL3Absolute" save="0"></var>
-    <var name="ak10jet_pileupJetId" save="0"></var>
-    <var name="ak10jet_looseJetID" save="0"></var>
-    <var name="ak10jet_tightJetID" save="0"></var>
-    <var name="ak10jet_hasGenJet" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_pt" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_eta" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_phi" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_m" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_E" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_status" save="0" mc="1"></var>
-    <var name="ak10jet_genJet_id" save="0" mc="1"></var>
-    <var name="ak10jet_hasGenParton" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_pt" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_eta" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_phi" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_m" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_E" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_status" save="0" mc="1"></var>
-    <var name="ak10jet_genParton_id" save="0" mc="1"></var>
-    <var name="sel_pfcand" save="1"></var>
-    <var name="pfcand_n" save="1"></var>
-    <var name="pfcand_pt" save="1"></var>
-    <var name="pfcand_eta" save="1"></var>
-    <var name="pfcand_phi" save="1"></var>
-    <var name="pfcand_E" save="1"></var>
-    <var name="pfcand_charge" save="1"></var>
-    <var name="pfcand_id" save="1"></var>
-    <var name="pfcand_dz" save="1"></var>
-    <var name="pfcand_trackIso" save="1"></var>
     <var name="gen_PVz" save="0" mc="1"></var>
     <var name="gen_all" save="1" mc="1"></var>
-    <var name="gen_stop" save="0" mc="1"></var>
-    <var name="gen_stop_mass" save="1" mc="1"></var>
 </variables>

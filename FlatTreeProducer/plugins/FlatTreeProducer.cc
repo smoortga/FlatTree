@@ -80,60 +80,11 @@ class FlatTreeProducer : public edm::EDAnalyzer
         virtual void beginRun(const edm::Run&, const edm::EventSetup&);
         virtual void endRun(const edm::Run&, const edm::EventSetup&);
 
-        TMVA::Reader* BookLeptonMVAReader(std::string basePath, std::string weightFileName, std::string type);
-        TMVA::Reader* BookLeptonMVAReaderMoriond16(std::string basePath, std::string weightFileName, std::string type);
-
-        void KeepEvent();
-        bool isFloat(const std::string& s);
-        bool isFloat(const boost::any & operand);
-        bool isBool(const boost::any & operand);
-        bool isInt(const boost::any & operand);
-        void fillCutVector(const char* cut_type, std::string& cut_value, std::map<std::string, boost::any>& vec);
-        void AddValue(const std::string& name);
-        void ReadConfFile(const std::string& confFile);
-        int CheckAlgo(const std::map<std::string, boost::any>& jet_algo, const char* name, std::string& algo);
-        std::string CheckAlgos();
-
-        template <typename T>
-            boost::any comp(const std::string& op, T v1, T v2);
-        template <typename T>
-            void CheckVectorCut(const std::vector<T>& v, const std::string& name);
-
-        template <typename T>
-            void CompareAlgo(const std::string& algo, T conf_algo_value);
-        template <typename T>
-            void CheckJet(const std::vector<T>& vJetPt, const std::string& jetpt, const std::vector<T>& vJetEta, const std::string& jeteta, const std::string& algo);
-        template <typename T>
-            void CheckElectron(const std::vector<T>& vElPt, const std::string& elpt, const std::vector<T>& vElEta, const std::string& eleta);
-        template <typename T>
-            void CheckMuon(const std::vector<T>& vMuonPt, const std::string& muonpt, const std::vector<T>& vMuonEta, const std::string& muoneta);
-
         FlatTree* ftree;
         const edm::Service<TFileService> fs;
 
         TH1D* hcount;
         TH1D* hweight;
-
-        TMVA::Reader* mu_reader_b;
-        TMVA::Reader* mu_reader_e;
-        TMVA::Reader* ele_reader_cb;
-        TMVA::Reader* ele_reader_fb;
-        TMVA::Reader* ele_reader_ec;
-        TMVA::Reader* ele_reader;
-        TMVA::Reader* mu_reader;
-
-        float lepMVA_pt;
-        float lepMVA_eta;
-        float lepMVA_miniRelIsoCharged;
-        float lepMVA_miniRelIsoNeutral;
-        float lepMVA_jetPtRatio;
-        float lepMVA_jetPtRelv2;
-        float lepMVA_jetBTagCSV;
-        float lepMVA_sip3d;
-        float lepMVA_dxy;
-        float lepMVA_dz;
-        float lepMVA_mvaId;
-        float lepMVA_jetNDauChargedMVASel;
 
         XMLDocument xmlconf;
 
@@ -159,9 +110,6 @@ class FlatTreeProducer : public edm::EDAnalyzer
         edm::EDGetTokenT<pat::TauCollection> tauToken_;
         edm::EDGetTokenT<pat::JetCollection> jetToken_;
         edm::EDGetTokenT<edm::View<pat::Jet> > viewJetToken_;
-        edm::EDGetTokenT<pat::JetCollection> jetPuppiToken_;
-        edm::EDGetTokenT<pat::JetCollection> ak8jetToken_;
-        edm::EDGetTokenT<pat::JetCollection> ak10jetToken_;
         edm::EDGetTokenT<reco::GenJetCollection> genJetToken_;
         edm::EDGetTokenT<std::vector<pat::MET> > metTokenAOD_;
         edm::EDGetTokenT<pat::METCollection> metTokenPuppi_;
@@ -173,7 +121,6 @@ class FlatTreeProducer : public edm::EDAnalyzer
         edm::EDGetTokenT<LHEEventProduct> LHEEventProductToken_;
         edm::EDGetTokenT<std::vector<PileupSummaryInfo> > puInfoToken_;
         edm::EDGetTokenT<reco::BeamSpot> bsToken_;
-        edm::EDGetTokenT<pat::PackedCandidateCollection> pfcandsToken_;
         edm::EDGetTokenT<reco::ConversionCollection> hConversionsToken_;
 
         edm::EDGetTokenT<bool> badMuonFilterToken_;
@@ -195,678 +142,15 @@ class FlatTreeProducer : public edm::EDAnalyzer
 
         edm::EDGetTokenT<double> metSigToken_;
         edm::EDGetTokenT<math::Error<2>::type> metCovToken_;
-        edm::EDGetTokenT<edm::ValueMap<float> > qgToken_;
 
         std::vector<std::string> filterTriggerNames_;
 
         JetCorrectionUncertainty *jecUnc;
 };
 
-bool FlatTreeProducer::isInt(const boost::any & operand)
-{
-    return operand.type() == typeid(int);
-}
-bool FlatTreeProducer::isFloat(const boost::any & operand)
-{
-    return operand.type() == typeid(float);
-}
-bool FlatTreeProducer::isBool(const boost::any& operand)
-{
-    return operand.type() == typeid(bool);
-}
-
-    template<typename T>
-boost::any FlatTreeProducer::comp(const std::string& op, T v1, T v2)
-{
-    if( !op.compare("||") )
-    {
-        return v1 || v2;
-    }
-    else if( !op.compare("&&") )
-    {
-        return v1 && v2;
-    }
-
-    if( v1 == typeid(int) && v2 == typeid(int) )
-    {
-        try
-        {
-            if( !op.compare("|") )
-            {
-                return v1 | v2;
-            }
-            else if( !op.compare("&") )
-            {
-                return v1 & v2;
-            }
-        }
-        catch (...)
-        {
-        }
-    }
-    return "";
-}
-
-void FlatTreeProducer::AddValue(const std::string& name)
-{
-    if( !name.compare("n_presel_jets") )
-    {
-        ftree->n_presel_jets += 1;
-    }
-    else if( !name.compare("n_presel_electrons") )
-    {
-        ftree->n_presel_electrons += 1;
-    }
-    else if( !name.compare("n_presel_muons") )
-    {
-        ftree->n_presel_muons += 1;
-    }
-}
-
-    template <typename T>
-void FlatTreeProducer::CheckVectorCut(const std::vector<T>& v, const std::string& name)
-{
-    if( ftree->keep_conf.find(name) != ftree->keep_conf.end() )
-    {
-        std::map<std::string, std::map<std::string, boost::any> > keep_conf = ftree->keep_conf;
-        std::map<std::string, boost::any> map_conf = keep_conf[name];
-        for( unsigned int i=0;i<v.size();++i )
-        {
-            if( isInt(map_conf["cut_min"]) && isInt(map_conf["cut_max"]) )
-            {
-                if( v[i] < boost::any_cast<int>(map_conf["cut_min"]) || v[i] > boost::any_cast<int>(map_conf["cut_max"]) )
-                {
-                    AddValue(name);
-                }
-            }
-            else if( isFloat(map_conf["cut_min"]) && isFloat(map_conf["cut_max"]) )
-            {
-                if( v[i] < boost::any_cast<float>(map_conf["cut_min"]) || v[i] > boost::any_cast<float>(map_conf["cut_max"]) )
-                {
-                    AddValue(name);
-                }
-            }
-            else{std::cout << "Wrong types" << std::endl;
-            }
-        }
-    }
-}
-
-    template <typename T>
-void FlatTreeProducer::CompareAlgo(const std::string& algo, T conf_algo_value)
-{
-    if( !algo.compare("jet_JBP") )
-    {
-        for( unsigned int i=0;i<ftree->jet_JBP.size();++i )
-            if( ftree->jet_JBP[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_JP") )
-    {
-        for( unsigned int i=0;i<ftree->jet_JP.size();++i )
-            if( ftree->jet_JP[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_TCHP") )
-    {
-        for( unsigned int i=0;i<ftree->jet_TCHP.size();++i )
-            if( ftree->jet_TCHP[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_TCHE") )
-    {
-        for( unsigned int i=0;i<ftree->jet_TCHE.size();++i )
-            if( ftree->jet_TCHE[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_SSVHP") )
-    {
-        for( unsigned int i=0;i<ftree->jet_SSVHP.size();++i )
-            if( ftree->jet_SSVHP[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_SSVHE") )
-    {
-        for( unsigned int i=0;i<ftree->jet_SSVHE.size();++i )
-            if( ftree->jet_SSVHE[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_CMVA") )
-    {
-        for( unsigned int i=0;i<ftree->jet_CMVA.size();++i )
-            if( ftree->jet_CMVA[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_CSVv2") )
-    {
-        for( unsigned int i=0;i<ftree->jet_CSVv2.size();++i )
-            if( ftree->jet_CSVv2[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-    else if( !algo.compare("jet_partonFlavour") )
-    {
-        for( unsigned int i=0;i<ftree->jet_partonFlavour.size();++i )
-            if( ftree->jet_partonFlavour[i] > conf_algo_value )
-                AddValue("n_presel_jets");
-    }
-}
-
-// FIXME : refactorize CheckJet, CheckElectron and CheckMuon
-    template <typename T>
-void FlatTreeProducer::CheckJet(const std::vector<T>& vJetPt, const std::string& jetpt, const std::vector<T>& vJetEta, const std::string& jeteta, const std::string& algo)
-{
-    std::map<std::string, std::map<std::string, boost::any> > keep_conf = ftree->keep_conf;
-
-    /*for(auto it = keep_conf.cbegin(); it != keep_conf.cend(); ++it)
-      std::cout << it->first << " " << std::endl;
-      */
-
-    //-- check that vJetPt and vJetEta have the same size
-    if(vJetPt.size()!=vJetEta.size()){
-        std::cerr<<" CheckJet: pt and eta vectors have different sizes !  - Function not applied" <<std::endl;
-        return ;
-    }
-
-    if( keep_conf.find(jetpt) != keep_conf.end() )
-    {
-        std::map<std::string, boost::any> conf_pt = keep_conf[jetpt];
-        for( unsigned int i=0;i<vJetPt.size();++i )
-        {
-            //std::cout<<"pt = "<<vJetPt[i]<<std::endl;
-            if( isInt(conf_pt["cut_min"]) )
-            {
-                //std::cout<<"pass"<<std::endl;
-                if( vJetPt[i] > boost::any_cast<int>(conf_pt["cut_min"]) )
-                {
-                    //std::cout<<"here too .."<<std::endl;
-                    if( keep_conf.find(jeteta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[jeteta];
-                        //for( unsigned int i=0;i<vJetEta.size();++i )
-                        // {
-                        if( isInt(conf_eta["cut_max"]) )
-                            //@EC@
-                            //if( isFloat(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vJetEta[i]) < boost::any_cast<int>(conf_eta["cut_max"]) )
-                            {
-                                if( !algo.empty() )
-                                {
-                                    std::map<std::string, boost::any> conf_algo = keep_conf[algo];
-                                    if( isInt(conf_algo["cut_algo"]) )
-                                    {
-                                        CompareAlgo(algo, boost::any_cast<int>(conf_algo["cut_algo"]));
-                                    }
-                                    else
-                                    {
-                                        std::cout << "'jet_pt' : 'cut_min' and 'cut_max' are type 'int', 'cut_algo' cannot be a 'float'." << std::endl;
-                                    }
-                                }
-                                else
-                                {
-                                    AddValue("n_presel_jets");
-                                }
-                            }
-                            //}
-                        else
-                        {
-                            std::cout << "'jet_pt' : 'cut_min' is a type 'int', 'jet_eta' : 'cut_max' cannot be a 'float'." << std::endl;
-                            break;
-                        }
-                    }
-                    }
-                    else
-                    {
-                        std::cout << "'jet_pt' : 'cut_min' set, but not 'jet_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else if( isFloat(conf_pt["cut_min"]) )
-            {
-                if( vJetPt[i] > boost::any_cast<float>(conf_pt["cut_min"]) )
-                {
-                    if( keep_conf.find(jeteta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[jeteta];
-                        if( isFloat(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vJetEta[i]) < boost::any_cast<float>(conf_eta["cut_max"]) )
-                            {
-                                if( !algo.empty() )
-                                {
-                                    std::map<std::string, boost::any> conf_algo = keep_conf[algo];
-                                    if( isFloat(conf_algo["cut_algo"]) )
-                                    {
-                                        CompareAlgo(algo, boost::any_cast<float>(conf_algo["cut_algo"]));
-                                    }
-                                    else
-                                    {
-                                        std::cout << "'jet_pt' : 'cut_min' and 'cut_max' are type 'float', 'cut_algo' cannot be an 'int'." << std::endl;
-                                    }
-                                }
-                                else
-                                {
-                                    AddValue("n_presel_jets");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            std::cout << "'jet_pt' : 'cut_min' is a type 'float', 'jet_eta' : 'cut_max' cannot be an 'int'." << std::endl;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        std::cout << "'jet_pt' : 'cut_min' set, but not 'jet_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else{std::cout << "'jet_pt' : wrong types." << std::endl;
-            }
-        }
-    }
-}
-
-    template <typename T>
-void FlatTreeProducer::CheckElectron(const std::vector<T>& vElPt, const std::string& elpt, const std::vector<T>& vElEta, const std::string& eleta)
-{
-    //-- check that vElPt and vElEta have the same size
-    if(vElPt.size()!=vElEta.size()){
-        std::cerr<<" CheckElectron: pt and eta vectors have different sizes !  - Function not applied" <<std::endl;
-        return ;
-    }
-    std::map<std::string, std::map<std::string, boost::any> > keep_conf = ftree->keep_conf;
-    if( keep_conf.find(elpt) != keep_conf.end() )
-    {
-        std::map<std::string, boost::any> conf_pt = keep_conf[elpt];
-        for( unsigned int i=0;i<vElPt.size();++i )
-        {
-            if( isInt(conf_pt["cut_min"]) )
-            {
-                if( vElPt[i] > boost::any_cast<int>(conf_pt["cut_min"]) )
-                {
-                    if( keep_conf.find(eleta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[eleta];
-                        //for( unsigned int i=0;i<vElEta.size();++i )
-                        // {
-                        if( isInt(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vElEta[i]) < boost::any_cast<int>(conf_eta["cut_max"]) )
-                            {
-                                AddValue("n_presel_electrons");
-                            }
-                            //}
-                        else
-                        {
-                            std::cout << "'el_pt' : 'cut_min' is a type 'int', 'el_eta' : 'cut_max' cannot be a 'float'." << std::endl;
-                            break;
-                        }
-                    }
-                    }
-                    else
-                    {
-                        std::cout << "'el_pt' : 'cut_min' set, but not 'el_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else if( isFloat(conf_pt["cut_min"]) )
-            {
-                if( vElPt[i] > boost::any_cast<float>(conf_pt["cut_min"]) )
-                {
-                    if( keep_conf.find(eleta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[eleta];
-                        //for( unsigned int i=0;i<vElEta.size();++i )
-                        //{
-                        if( isFloat(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vElEta[i]) < boost::any_cast<float>(conf_eta["cut_max"]) )
-                            {
-                                AddValue("n_presel_electrons");
-                            }
-                        }
-                        else
-                        {
-                            std::cout << "'el_pt' : 'cut_min' is a type 'float', 'el_eta' : 'cut_max' cannot be an 'int'." << std::endl;
-                            break;
-                        }
-                        //}
-                    }
-                    else
-                    {
-                        std::cout << "'el_pt' : 'cut_min' set, but not 'el_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else{std::cout << "'el_pt' : wrong types." << std::endl;
-            }
-        }
-    }
-}
-
-    template <typename T>
-void FlatTreeProducer::CheckMuon(const std::vector<T>& vMuonPt, const std::string& muonpt, const std::vector<T>& vMuonEta, const std::string& muoneta)
-{
-    //-- check that vMuonPt and vMuonEta have the same size
-    if(vMuonPt.size()!=vMuonEta.size()){
-        std::cerr<<" CheckMuon: pt and eta vectors have different sizes !  - Function not applied" <<std::endl;
-        return ;
-    }
-    std::map<std::string, std::map<std::string, boost::any> > keep_conf = ftree->keep_conf;
-    if( keep_conf.find(muonpt) != keep_conf.end() )
-    {
-        std::map<std::string, boost::any> conf_pt = keep_conf[muonpt];
-        for( unsigned int i=0;i<vMuonPt.size();++i )
-        {
-            if( isInt(conf_pt["cut_min"]) )
-            {
-                if( vMuonPt[i] > boost::any_cast<int>(conf_pt["cut_min"]) )
-                {
-                    if( keep_conf.find(muoneta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[muoneta];
-                        //for( unsigned int i=0;i<vMuonEta.size();++i )
-                        //{
-                        if( isInt(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vMuonEta[i]) < boost::any_cast<int>(conf_eta["cut_max"]) )
-                            {
-                                AddValue("n_presel_muons");
-                            }
-                        }
-                        else
-                        {
-                            std::cout << "'mu_pt' : 'cut_min' is a type 'int', 'mu_eta' : 'cut_max' cannot be a 'float'." << std::endl;
-                            break;
-                        }
-                        //}
-                    }
-                    else
-                    {
-                        std::cout << "'mu_pt' : 'cut_min' set, but not 'mu_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else if( isFloat(conf_pt["cut_min"]) )
-            {
-                if( vMuonPt[i] > boost::any_cast<float>(conf_pt["cut_min"]) )
-                {
-                    if( keep_conf.find(muoneta) != keep_conf.end() )
-                    {
-                        std::map<std::string, boost::any> conf_eta = keep_conf[muoneta];
-                        //for( unsigned int i=0;i<vMuonEta.size();++i )
-                        // {
-                        if( isFloat(conf_eta["cut_max"]) )
-                        {
-                            if( fabs(vMuonEta[i]) < boost::any_cast<float>(conf_eta["cut_max"]) )
-                            {
-                                AddValue("n_presel_muons");
-                            }
-                        }
-                        else
-                        {
-                            std::cout << "'mu_pt' : 'cut_min' is a type 'float', 'mu_eta' : 'cut_max' cannot be an 'int'." << std::endl;
-                            break;
-                        }
-                        //}
-                    }
-                    else
-                    {
-                        std::cout << "'mu_pt' : 'cut_min' set, but not 'mu_eta' : 'cut_max'" << std::endl;
-                        break;
-                    }
-                }
-            }
-            else{std::cout << "'mu_pt' : wrong types." << std::endl;
-            }
-        }
-    }
-}
-
-int FlatTreeProducer::CheckAlgo(const std::map<std::string, boost::any>& jet_algo, const char* name, std::string& algo)
-{
-    if( jet_algo.count("cut_algo") == 1 )
-    {
-        algo = name;
-        return 1;
-    }
-    return 0;
-}
-
-std::string FlatTreeProducer::CheckAlgos()
-{
-    int nbAlgo = 0;
-    std::string algo("");
-    std::map<std::string, std::map<std::string, boost::any> > keep_conf = ftree->keep_conf;
-    std::map<std::string, boost::any> jet_JBP = keep_conf["jet_JBP"];
-    std::map<std::string, boost::any> jet_JP = keep_conf["jet_JP"];
-    std::map<std::string, boost::any> jet_TCHP = keep_conf["jet_TCHP"];
-    std::map<std::string, boost::any> jet_TCHE = keep_conf["jet_TCHE"];
-    std::map<std::string, boost::any> jet_SSVHP = keep_conf["jet_SSVHP"];
-    std::map<std::string, boost::any> jet_SSVHE = keep_conf["jet_SSVHE"];
-    std::map<std::string, boost::any> jet_CMVA = keep_conf["jet_CMVA"];
-    std::map<std::string, boost::any> jet_CSVv2 = keep_conf["jet_CSVv2"];
-    std::map<std::string, boost::any> jet_partonFlavour = keep_conf["jet_partonFlavour"];
-
-    nbAlgo += CheckAlgo(jet_JBP, "jet_JBP", algo);
-    nbAlgo += CheckAlgo(jet_JP, "jet_JP", algo);
-    nbAlgo += CheckAlgo(jet_TCHP, "jet_TCHP", algo);
-    nbAlgo += CheckAlgo(jet_TCHE, "jet_TCHE", algo);
-    nbAlgo += CheckAlgo(jet_SSVHP, "jet_SSVHP", algo);
-    nbAlgo += CheckAlgo(jet_SSVHE, "jet_SSHVE", algo);
-    nbAlgo += CheckAlgo(jet_CMVA, "jet_CMVA", algo);
-    nbAlgo += CheckAlgo(jet_CSVv2, "jet_CSVv2", algo);
-    nbAlgo += CheckAlgo(jet_partonFlavour, "jet_partonFlavour", algo);
-
-    if( nbAlgo > 1 )
-    {
-        std::cout << "Different algorithms are set, please choose only one. Algorithm not considered." << std::endl;
-        algo.clear();
-        return algo;
-    }
-    return algo;
-}
-
-void FlatTreeProducer::KeepEvent()
-{
-    // Jets
-    std::string algo = this->CheckAlgos();
-    // jet_pt > cut_min && jet_eta >
-    this->CheckJet(ftree->jet_pt, "jet_pt", ftree->jet_eta, "jet_eta", algo);
-
-    // Electron
-    // el_pt> XX && fabs(el_eta)> YY && iso < ZZ
-    // TODO ISO
-    this->CheckElectron(ftree->el_pt, "el_pt", ftree->el_eta, "el_eta");
-
-    // Muon idem
-    this->CheckMuon(ftree->mu_pt, "mu_pt", ftree->mu_eta, "mu_eta");
-}
-
-bool FlatTreeProducer::isFloat(const std::string& s)
-{
-    return !std::all_of(s.begin(), s.end(), ::isdigit);
-}
-
-void FlatTreeProducer::fillCutVector(const char* cut_type, std::string& cut_value, std::map<std::string, boost::any> & vmap)
-{
-    if( !cut_value.empty() )
-    {
-        bool t_cut = isFloat(cut_value);
-        if( t_cut )
-        {
-            float fcut = atof(cut_value.c_str());
-            vmap[cut_type] = fcut;
-        }
-        else if( !t_cut )
-        {
-            int fcut = atoi(cut_value.c_str());
-            vmap[cut_type] = fcut;
-        }
-        else
-        {
-            std::cout << "Warning ! Different types of cut (int or float). Cut Skipped." << std::endl;
-        }
-    }
-    cut_value = "";
-}
-
-void FlatTreeProducer::ReadConfFile(const std::string& confFile)
-{
-    xmlconf.LoadFile(confFile.c_str());
-
-    //-----------------------------
-    //-- Read preselection section
-    //-----------------------------
-    XMLElement* tElement = xmlconf.FirstChildElement("preselection")->FirstChildElement("obj");
-
-    for( XMLElement* child=tElement;child!=0;child=child->NextSiblingElement() )
-    {
-        const std::string& obj = child->ToElement()->Attribute("name");
-        const std::string& min = child->ToElement()->Attribute("min");
-        int imin = atoi(min.c_str());
-        if(!obj.compare("jet")) 	ftree->n_presel_jets_min=imin; 
-        if(!obj.compare("electron")) 	ftree->n_presel_electrons_min=imin; 
-        if(!obj.compare("lepton")) 	ftree->n_presel_leptons_min=imin; 
-        if(!obj.compare("muon")) 	ftree->n_presel_muons_min=imin; 
-        if(!obj.compare("MET")) 	ftree->presel_MET_min=imin; 
-
-    }
-    tElement = xmlconf.FirstChildElement("preselection")->FirstChildElement("info");
-    const std::string& activ = tElement->ToElement()->Attribute("activate");
-    ftree->apply_presel = (bool) (atoi(activ.c_str()));
-    //std::cout<<activ<<" "<<ftree->apply_presel<<std::endl;
-    //if(ftree->apply_presel) std::cout<<"TEST"<<std::endl;
-
-
-    //-----------------------------
-    //-- Read variables section
-    //-----------------------------
-    tElement = xmlconf.FirstChildElement("variables")->FirstChildElement("var");
-
-    std::string vcutmin("");
-    std::string vcutmax("");
-    std::string vcutiso("");
-    std::string vcutalgo("");
-    std::string vcutexpr("");
-    for( XMLElement* child=tElement;child!=0;child=child->NextSiblingElement() )
-    {
-        const std::string& vname = child->ToElement()->Attribute("name");
-        const std::string& vsave = child->ToElement()->Attribute("save");
-        if (child->ToElement()->Attribute("cut_min"))
-        {
-            vcutmin = child->ToElement()->Attribute("cut_min");
-        }
-        if (child->ToElement()->Attribute("cut_max"))
-        {
-            vcutmax = child->ToElement()->Attribute("cut_max");
-        }
-        if (child->ToElement()->Attribute("cut_iso"))
-        {
-            vcutiso = child->ToElement()->Attribute("cut_iso");
-        }
-        if (child->ToElement()->Attribute("cut_expr"))
-        {
-            ;
-        }
-        if (child->ToElement()->Attribute("cut_algo"))
-        {
-            vcutalgo = child->ToElement()->Attribute("cut_algo");
-        }
-
-        std::map<std::string, boost::any > vmap;
-        bool bsave = atoi(vsave.c_str());
-        fillCutVector("cut_min", vcutmin, vmap);
-        fillCutVector("cut_max", vcutmax, vmap);
-        fillCutVector("cut_iso", vcutiso, vmap);
-        fillCutVector("cut_algo", vcutalgo, vmap);
-        if (vmap.size() > 0)
-            ftree->keep_conf.insert(std::make_pair(vname, vmap));
-        ftree->conf.insert(std::make_pair(vname,bsave));
-    }
-}
-
-TMVA::Reader* FlatTreeProducer::BookLeptonMVAReader(std::string basePath, std::string weightFileName, std::string type)
-{
-    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
-
-    reader->AddVariable("LepGood_pt",                                  &lepMVA_pt);
-    reader->AddVariable("LepGood_miniRelIsoCharged",                   &lepMVA_miniRelIsoCharged);
-    reader->AddVariable("LepGood_miniRelIsoNeutral",                   &lepMVA_miniRelIsoNeutral);
-    reader->AddVariable("LepGood_jetPtRelv2",                          &lepMVA_jetPtRelv2);
-    reader->AddVariable("min(LepGood_jetPtRatio_LepAwareJECv2,1.5)",   &lepMVA_jetPtRatio);
-    reader->AddVariable("max(LepGood_jetBTagCSV,0)",                   &lepMVA_jetBTagCSV);
-    reader->AddVariable("LepGood_sip3d",                               &lepMVA_sip3d);
-    reader->AddVariable("log(abs(LepGood_dxy))",                       &lepMVA_dxy);
-    reader->AddVariable("log(abs(LepGood_dz))",                        &lepMVA_dz);
-    if( type == "ele" ) reader->AddVariable("LepGood_mvaIdPhys14",     &lepMVA_mvaId);
-    else reader->AddVariable("LepGood_segmentCompatibility",           &lepMVA_mvaId);
-
-    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
-
-    return reader;
-}
-
-TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderMoriond16(std::string basePath, std::string weightFileName, std::string type)
-{
-    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
-
-    reader->AddVariable("LepGood_pt",                                  &lepMVA_pt);
-    reader->AddVariable("LepGood_eta",                                 &lepMVA_eta);
-    reader->AddVariable("LepGood_jetNDauChargedMVASel",                &lepMVA_jetNDauChargedMVASel);
-    reader->AddVariable("LepGood_miniRelIsoCharged",                   &lepMVA_miniRelIsoCharged);
-    reader->AddVariable("LepGood_miniRelIsoNeutral",                   &lepMVA_miniRelIsoNeutral);
-    reader->AddVariable("LepGood_jetPtRelv2",                          &lepMVA_jetPtRelv2);
-    reader->AddVariable("min(LepGood_jetPtRatiov2,1.5)",               &lepMVA_jetPtRatio);
-    reader->AddVariable("max(LepGood_jetBTagCSV,0)",                   &lepMVA_jetBTagCSV);
-    reader->AddVariable("LepGood_sip3d",                               &lepMVA_sip3d);
-    reader->AddVariable("log(abs(LepGood_dxy))",                       &lepMVA_dxy);
-    reader->AddVariable("log(abs(LepGood_dz))",                        &lepMVA_dz);
-    if( type == "ele" ) reader->AddVariable("LepGood_mvaIdSpring15",   &lepMVA_mvaId);
-    else reader->AddVariable("LepGood_segmentCompatibility",           &lepMVA_mvaId);
-
-    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
-
-    return reader;
-}
-
 FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hltPrescale_(iConfig,consumesCollector(),*this)
 {
-    // ###
-    // Temporarily redirecting stdout to avoid huge TMVA loading dump
-    // ###
-    std::cout << "Temporarily redirecting stdout to avoid huge TMVA dump when loading MVA readers..." << std::endl;
-    std::stringstream tmpBuffer;
-    std::streambuf* oldStdout = std::cout.rdbuf(tmpBuffer.rdbuf());
-
-    // ###############
-    // #  Load MVAs  #
-    // ###############
-    //
-    const char* cmssw_base = std::getenv("CMSSW_BASE");
-    std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/FlatTree/FlatTreeProducer/data/lepMVA/";
-    mu_reader_b      = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/mu_eta_b_BDTG.weights.xml" , "mu");
-    mu_reader_e      = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/mu_eta_e_BDTG.weights.xml" , "mu");
-    ele_reader_cb    = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/el_eta_cb_BDTG.weights.xml", "ele");
-    ele_reader_ec    = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/el_eta_ec_BDTG.weights.xml", "ele");
-    ele_reader_fb    = BookLeptonMVAReader(FlatTreeProducerLepMVAPath, "/el_eta_fb_BDTG.weights.xml", "ele");
-    mu_reader        = BookLeptonMVAReaderMoriond16(FlatTreeProducerLepMVAPath, "/mu_BDTG.weights.xml", "mu");
-    ele_reader       = BookLeptonMVAReaderMoriond16(FlatTreeProducerLepMVAPath, "/el_BDTG.weights.xml", "ele");
-
-    // ###
-    // Restore stdout
-    // ###
-    std::cout.rdbuf(oldStdout);
-    std::cout << "Stdout now restored." << std::endl;
-
     // ########################
     // #  Create output tree  #
     // ########################
@@ -897,9 +181,6 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     tauToken_             = consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("tauInput"));
     jetToken_             = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jetInput"));
     viewJetToken_         = consumes<edm::View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("jetInput"));
-    ak8jetToken_          = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("ak8jetInput"));
-    ak10jetToken_         = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("ak10jetInput"));
-    jetPuppiToken_        = consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("jetPuppiInput"));
     genJetToken_          = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genJetInput"));
     metTokenAOD_          = consumes<std::vector<pat::MET> >(iConfig.getParameter<edm::InputTag>("metInput"));
     metTokenMINIAOD_      = consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metInput"));
@@ -911,7 +192,6 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     LHEEventProductToken_ = consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("LHEEventProductInput"));
     puInfoToken_          = consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("puInfoInput"));
     bsToken_              = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("bsInput"));
-    pfcandsToken_         = consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfcandsInput"));
     hConversionsToken_    = consumes<reco::ConversionCollection>(iConfig.getParameter<edm::InputTag>("hConversionsInput"));
 
     badMuonFilterToken_   = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadMuonFilter"));
@@ -936,18 +216,12 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
 
     metSigToken_            = consumes<double>(iConfig.getParameter<edm::InputTag>("metSigInput"));
     metCovToken_            = consumes<math::Error<2>::type>(iConfig.getParameter<edm::InputTag>("metCovInput"));
-    qgToken_                = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
 
     // #########################
     // #  Read XML config file #
     // #########################
     //
     std::string confFile = iConfig.getParameter<std::string>("confFile");
-    // ------
-    // Read the config file and extract value used to apply preselection
-    // Initially developed by Thibault - Modified by Eric
-    // -----
-    ReadConfFile(confFile);
     int buffersize = iConfig.getParameter<int>("bufferSize");
     if (buffersize <= 0) buffersize = 32000;
 
@@ -1058,92 +332,68 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if( !metSigPtr.isValid() or metSigPtr.failedToGet() )
         std::cerr << " Fail to access METSignificance branch " << std::endl;
 
-    // MET covariance
-    edm::Handle<math::Error<2>::type> metCovPtr;
-    iEvent.getByToken(metCovToken_,metCovPtr);
-    ftree->met_cov00 = (*metCovPtr)(0,0);
-    ftree->met_cov10 = (*metCovPtr)(1,0);
-    ftree->met_cov01 = (*metCovPtr)(0,1);
-    ftree->met_cov11 = (*metCovPtr)(1,1);
+   // MET covariance
+   edm::Handle<math::Error<2>::type> metCovPtr;
+   iEvent.getByToken(metCovToken_,metCovPtr);
+   ftree->met_cov00 = (*metCovPtr)(0,0);
+   ftree->met_cov10 = (*metCovPtr)(1,0);
+   ftree->met_cov01 = (*metCovPtr)(0,1);
+   ftree->met_cov11 = (*metCovPtr)(1,1);
 
-    // Packed candidate collection
-    edm::Handle<pat::PackedCandidateCollection> pfcands;
-    if( dataFormat_ != "AOD" ) iEvent.getByToken(pfcandsToken_,pfcands);
+   // Jets
+   edm::Handle<pat::JetCollection> jets;
+   iEvent.getByToken(jetToken_,jets);
 
-    // Jets
-    edm::Handle<pat::JetCollection> jets;
-    iEvent.getByToken(jetToken_,jets);
+   edm::Handle<edm::View<pat::Jet> > view_jets;
+   iEvent.getByToken(viewJetToken_,view_jets);
 
-    edm::Handle<edm::View<pat::Jet> > view_jets;
-    iEvent.getByToken(viewJetToken_,view_jets);
-
-    edm::Handle<edm::ValueMap<float> > qgHandle;
-    iEvent.getByToken(qgToken_, qgHandle);
-
-    // PuppiJets
-    edm::Handle<pat::JetCollection> jetsPuppi;
-    try
-    {
-        iEvent.getByToken(jetPuppiToken_,jetsPuppi);
-    }
-    catch (...) {;
-    }
-
-    // W-jets
-    edm::Handle<pat::JetCollection> ak8jets;
-    iEvent.getByToken(ak8jetToken_,ak8jets);
-
-    // AK10: W-jets
-    edm::Handle<pat::JetCollection> ak10jets;
-    iEvent.getByToken(ak10jetToken_,ak10jets);
-
-    // GenJets
-    edm::Handle<reco::GenJetCollection> genJets;
-    if( !isData_ ) iEvent.getByToken(genJetToken_,genJets);
-    edm::Handle<reco::JetFlavourMatchingCollection> genJetFlavourMatching;
-    if( !isData_ )
-    {
+   // GenJets
+   edm::Handle<reco::GenJetCollection> genJets;
+   if( !isData_ ) iEvent.getByToken(genJetToken_,genJets);
+   edm::Handle<reco::JetFlavourMatchingCollection> genJetFlavourMatching;
+   if( !isData_ )
+     {
         //	iEvent.getByLabel("genJetFlavour",genJetFlavourMatching);
-    }
+     }
+   
+   // Muons
+   edm::Handle<pat::MuonCollection> muons;
+   iEvent.getByToken(muonToken_,muons);
+   
+   // Electrons
+   edm::Handle<edm::View<reco::GsfElectron> > electrons;
+   iEvent.getByToken(electronToken_,electrons);
 
-    // Muons
-    edm::Handle<pat::MuonCollection> muons;
-    iEvent.getByToken(muonToken_,muons);
+   edm::Handle<pat::ElectronCollection> electronsPAT;
+   iEvent.getByToken(electronPATToken_,electronsPAT);
+   
+   edm::Handle<edm::ValueMap<bool> > veto_cbid_decisions;
+   edm::Handle<edm::ValueMap<bool> > loose_cbid_decisions;
+   edm::Handle<edm::ValueMap<bool> > medium_cbid_decisions;
+   edm::Handle<edm::ValueMap<bool> > tight_cbid_decisions;
+   edm::Handle<edm::ValueMap<bool> > heep_cbid_decisions;
+   
+   edm::Handle<edm::ValueMap<bool> > medium_mvaid_decisions;
+   edm::Handle<edm::ValueMap<bool> > tight_mvaid_decisions;
+   
+   iEvent.getByToken(eleVetoCBIdMapToken_,veto_cbid_decisions);
+   iEvent.getByToken(eleLooseCBIdMapToken_,loose_cbid_decisions);
+   iEvent.getByToken(eleMediumCBIdMapToken_,medium_cbid_decisions);
+   iEvent.getByToken(eleTightCBIdMapToken_,tight_cbid_decisions);
+   iEvent.getByToken(eleHEEPCBIdMapToken_,heep_cbid_decisions);
 
-    // Electrons
-    edm::Handle<edm::View<reco::GsfElectron> > electrons;
-    iEvent.getByToken(electronToken_,electrons);
-
-    edm::Handle<pat::ElectronCollection> electronsPAT;
-    iEvent.getByToken(electronPATToken_,electronsPAT);
-
-    edm::Handle<edm::ValueMap<bool> > veto_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > loose_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > medium_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > tight_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > heep_cbid_decisions;
-
-    edm::Handle<edm::ValueMap<bool> > medium_mvaid_decisions;
-    edm::Handle<edm::ValueMap<bool> > tight_mvaid_decisions;
-
-    iEvent.getByToken(eleVetoCBIdMapToken_,veto_cbid_decisions);
-    iEvent.getByToken(eleLooseCBIdMapToken_,loose_cbid_decisions);
-    iEvent.getByToken(eleMediumCBIdMapToken_,medium_cbid_decisions);
-    iEvent.getByToken(eleTightCBIdMapToken_,tight_cbid_decisions);
-    iEvent.getByToken(eleHEEPCBIdMapToken_,heep_cbid_decisions);
-
-    iEvent.getByToken(eleMediumMVAIdMapToken_,medium_mvaid_decisions);
-    iEvent.getByToken(eleTightMVAIdMapToken_,tight_mvaid_decisions);
-
-    edm::Handle<edm::ValueMap<float> > mvaValues;
-    edm::Handle<edm::ValueMap<int> > mvaCategories;
-    iEvent.getByToken(mvaValuesMapToken_,mvaValues);
-    iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
-
-    edm::Handle<edm::ValueMap<vid::CutFlowResult> > veto_id_cutflow_;
-    edm::Handle<edm::ValueMap<vid::CutFlowResult> > medium_id_cutflow_;
-    iEvent.getByToken(vetoIdFullInfoMapToken_, veto_id_cutflow_);
-    iEvent.getByToken(mediumIdFullInfoMapToken_, medium_id_cutflow_);
+   iEvent.getByToken(eleMediumMVAIdMapToken_,medium_mvaid_decisions);
+   iEvent.getByToken(eleTightMVAIdMapToken_,tight_mvaid_decisions);
+   
+   edm::Handle<edm::ValueMap<float> > mvaValues;
+   edm::Handle<edm::ValueMap<int> > mvaCategories;
+   iEvent.getByToken(mvaValuesMapToken_,mvaValues);
+   iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
+   
+   edm::Handle<edm::ValueMap<vid::CutFlowResult> > veto_id_cutflow_;
+   edm::Handle<edm::ValueMap<vid::CutFlowResult> > medium_id_cutflow_;
+   iEvent.getByToken(vetoIdFullInfoMapToken_, veto_id_cutflow_);
+   iEvent.getByToken(mediumIdFullInfoMapToken_, medium_id_cutflow_);
 
     // Taus
     edm::Handle<pat::TauCollection> taus;
@@ -1153,30 +403,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     edm::Handle<reco::ConversionCollection> hConversions;
     if( dataFormat_ != "AOD" ) iEvent.getByToken(hConversionsToken_,hConversions);
 
-    // ###############################################################
-    // #    ____                           _     _        __         #
-    // #   / ___| ___ _ __   ___ _ __ __ _| |   (_)_ __  / _| ___    #
-    // #  | |  _ / _ \ '_ \ / _ \ '__/ _` | |   | | '_ \| |_ / _ \   #
-    // #  | |_| |  __/ | | |  __/ | | (_| | |   | | | | |  _| (_) |  #
-    // #   \____|\___|_| |_|\___|_|  \__,_|_|   |_|_| |_|_|  \___/   #
-    // #                                                             #
-    // ###############################################################
-    //
     ftree->ev_run = iEvent.id().run();
     ftree->ev_id = iEvent.id().event();
     ftree->ev_lumi = iEvent.id().luminosityBlock();
 
-    //std::cout << " Event =================================================================== " << std::endl << "No: " << iEvent.id().event() << std::endl ;
-
-    // ##########################################################
-    // #   ___       _ _   _       _         _        _         #
-    // #  |_ _|_ __ (_) |_(_) __ _| |    ___| |_ __ _| |_ ___   #
-    // #   | || '_ \| | __| |/ _` | |   / __| __/ _` | __/ _ \  #
-    // #   | || | | | | |_| | (_| | |   \__ \ || (_| | ||  __/  #
-    // #  |___|_| |_|_|\__|_|\__,_|_|   |___/\__\__,_|\__\___|  #
-    // #                                                        #
-    // ##########################################################
-    //
     float mc_weight = 1.;
 
     if( genEventInfo.isValid() )
@@ -1222,16 +452,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     hweight->SetBinContent(1,hweight->GetBinContent(1)+ftree->mc_weight);
 
-    // ####################################
-    // #   ____  _ _                      #
-    // #  |  _ \(_) | ___   _   _ _ __    #
-    // #  | |_) | | |/ _ \ | | | | '_ \   #
-    // #  |  __/| | |  __/ | |_| | |_) |  #
-    // #  |_|   |_|_|\___|  \__,_| .__/   #
-    // #                         |_|      #
-    // #                                  #
-    // ####################################
-    //
     if( !isData_ && fillPUInfo_)
     {
         ftree->mc_pu_Npvi = pileupInfo->size();
@@ -1288,16 +508,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         mc_truth->fillGenPV(iEvent,iSetup,*ftree,genParticlesHandle);
     }
 
-    // #########################################
-    // #   _____     _                         #
-    // #  |_   _| __(_) __ _  __ _  ___ _ __   #
-    // #    | || '__| |/ _` |/ _` |/ _ \ '__|  #
-    // #    | || |  | | (_| | (_| |  __/ |     #
-    // #    |_||_|  |_|\__, |\__, |\___|_|     #
-    // #               |___/ |___/             #
-    // #                                       #
-    // #########################################
-    //
     bool passMETFilters = 1;
     bool pass_HBHENoiseFilter = 1;
     bool pass_HBHENoiseIsoFilter = 1;
@@ -1497,8 +707,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
     // =========== END OF TRIGGER ==========
-    //
-    //
+
     reco::Vertex *primVtx = NULL;
 
     ftree->nvertex = int(vertices->size());
@@ -1525,20 +734,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->pv_isFake = primVtx->isFake();
     }
 
-    // Rho
     ftree->ev_rho = *rhoPtr;
 
-    // ####################################################
-    // #   __  __ _         _               _____ _____   #
-    // #  |  \/  (_)___ ___(_)_ __   __ _  | ____|_   _|  #
-    // #  | |\/| | / __/ __| | '_ \ / _` | |  _|   | |    #
-    // #  | |  | | \__ \__ \ | | | | (_| | | |___  | |    #
-    // #  |_|  |_|_|___/___/_|_| |_|\__, | |_____| |_|    #
-    // #                            |___/                 #
-    // #                                                  #
-    // ####################################################
-    //
-    // met significance
     ftree->met_sig = *metSigPtr;
 
     // MET
@@ -1689,15 +886,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->metPuppi_sumet = metv.sumEt();
     }
 
-    // #################################################
-    // #   _____ _           _                         #
-    // #  | ____| | ___  ___| |_ _ __ ___  _ __  ___   #
-    // #  |  _| | |/ _ \/ __| __| '__/ _ \| '_ \/ __|  #
-    // #  | |___| |  __/ (__| |_| | | (_) | | | \__ \  #
-    // #  |_____|_|\___|\___|\__|_|  \___/|_| |_|___/  #
-    // #                                               #
-    // #################################################
-    //
+
     int nElec = electrons->size();
 
     for(int ie=0;ie<nElec;ie++)
@@ -1877,58 +1066,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_dr04HcalDepth2TowerSumEt.push_back(elec.dr04HcalDepth2TowerSumEt());
         ftree->el_dr04TkSumPt.push_back(elec.dr04TkSumPt());
 
-        // mini-iso
-        float miniIso           = -666;
-        float miniIsoTTH        = -666;
-        float miniIsoTTHCharged = -666;
-        float miniIsoTTHNeutral = -666;
-
-        if( dataFormat_ != "AOD" )
-        {
-
-            // Variables used for stop analysis
-            double EA_miniIso = getEA(elec.eta(), EL_EA_ETA, EL_EA_VALUE);
-            miniIso = getPFIsolation(pfcands,dynamic_cast<const reco::Candidate*>(&elec),*rhoPtr, EA_miniIso, 0.05,0.2,10.,false, false);
-            // ---------------------------------
-            //
-            // Below: Variables used for tt-H analysis
-            //
-            float miniIsoR = 10.0/std::min(std::max(float(elec.pt()),float(50.)),float(200.));
-
-            float EffArea = 0.;
-            float eta = elec.eta();
-
-            if(      fabs(eta) > 0      && fabs(eta) < 1.0 )   EffArea = 0.1752;
-            else if( fabs(eta) >= 1.0   && fabs(eta) < 1.479 ) EffArea = 0.1862;
-            else if( fabs(eta) >= 1.479 && fabs(eta) < 2.0 )   EffArea = 0.1411;
-            else if( fabs(eta) >= 2.0   && fabs(eta) < 2.2 )   EffArea = 0.1534;
-            else if( fabs(eta) >= 2.2   && fabs(eta) < 2.3 )   EffArea = 0.1903;
-            else if( fabs(eta) >= 2.3   && fabs(eta) < 2.4 )   EffArea = 0.2243;
-            else if( fabs(eta) >= 2.4   && fabs(eta) < 2.5 )   EffArea = 0.2687;
-
-            float correction = ftree->ev_rho*EffArea*(miniIsoR/0.3)*(miniIsoR/0.3);
-
-            float pfIsoCharged = ElecPfIsoCharged(elec,pfcands,miniIsoR);
-            float pfIsoNeutral = ElecPfIsoNeutral(elec,pfcands,miniIsoR);
-            float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
-
-            //std::cout << "pfIsoCharged = " << pfIsoCharged << "    pfIsoNeutral = " << pfIsoNeutral << "   pfIsoPUSubtracted = " << pfIsoPUSubtracted << std::endl;
-
-            miniIsoTTH        = (pfIsoCharged + pfIsoPUSubtracted)/elec.pt();
-            miniIsoTTHCharged = pfIsoCharged / elec.pt(); // for test XXX
-            miniIsoTTHNeutral = pfIsoPUSubtracted / elec.pt();
-            //miniIsoTTHNeutral = pfIsoNeutral;
-            // ---------------------------------
-        }
-
-        //std::cout << elec.pt() << "   " << miniIsoTTH << "   " << miniIsoTTHCharged << "  " << miniIsoTTHNeutral << std::endl;
-
-        ftree->el_miniIso.push_back(miniIso);
-        ftree->el_miniIsoTTH.push_back(miniIsoTTH);
-
-        //ftree->el_miniIsoTTHCharged.pushback(miniIsoTTHCharged); //?
-        //ftree->el_miniIsoTTHNeutral.pushback(miniIsoTTHNeutral); //?
-
         ftree->el_vx.push_back(elec.vx());
         ftree->el_vy.push_back(elec.vy());
         ftree->el_vz.push_back(elec.vz());
@@ -1936,94 +1073,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_hasGsfTrack.push_back(hasGsfTrack);
 
         ftree->el_passConversionVeto.push_back(elec.passConversionVeto());
-
-        double el_pt = elec.pt();
-        double el_eta = elec.eta();
-        double el_phi = elec.phi();
-        double el_lepMVA = -666.;
-        double el_lepMVA_Moriond16 = -666.;
-
-        float drmin = 0.5;
-        int jcl = -1;
-        for(unsigned int ij=0;ij<jets->size();ij++)
-        {
-            if( jets->at(ij).pt() < 10. ) continue;
-            float dr = GetDeltaR(jets->at(ij).eta(),
-                    jets->at(ij).phi(),
-                    el_eta,
-                    el_phi);
-            if( dr < drmin )
-            {
-                drmin = dr;
-                jcl = ij;
-            }
-        }
-
-        lepMVA_pt = el_pt; 
-        lepMVA_eta = el_eta;
-        lepMVA_miniRelIsoNeutral = miniIsoTTHNeutral;
-        lepMVA_miniRelIsoCharged = miniIsoTTHCharged;
-        lepMVA_jetPtRatio = (jcl >= 0) ? std::min(ptRatioElec(elec,jets->at(jcl)),1.5) : 1.5;
-        lepMVA_jetPtRelv2 = (jcl >= 0) ? ptRelElec(elec,jets->at(jcl)) : 0.0;
-        float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
-        lepMVA_jetBTagCSV = std::max(double(csv),0.);
-        lepMVA_sip3d = fabs(ftree->el_ip3d.back()/ftree->el_ip3dErr.back());
-        lepMVA_dxy = log(fabs(ftree->el_gsfTrack_PV_dxy.back()));
-        lepMVA_dz = log(fabs(ftree->el_gsfTrack_PV_dz.back()));
-        lepMVA_mvaId = ftree->el_mvaNonTrigV0.back();
-        lepMVA_jetNDauChargedMVASel = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl), *primVtx) : 0.0;
-
-        float el_scleta = ftree->el_superCluster_eta.back();
-        if( fabs(el_scleta) < 0.8 ) el_lepMVA = ele_reader_cb->EvaluateMVA("BDTG method");
-        else if( fabs(el_scleta) >= 0.8 && fabs(el_scleta) < 1.479 ) el_lepMVA = ele_reader_fb->EvaluateMVA("BDTG method");
-        else el_lepMVA = ele_reader_ec->EvaluateMVA("BDTG method");
-
-        el_lepMVA_Moriond16 = ele_reader->EvaluateMVA("BDTG method");
-
-        ftree->el_lepMVA.push_back(el_lepMVA);
-        ftree->el_lepMVA_Moriond16.push_back(el_lepMVA_Moriond16);
-
-        float conept = (jcl >= 0) ? conePtElec(elec,jets->at(jcl)) : -100;
-        ftree->el_jetConePt_ttH.push_back( conept );
-
-        bool debug = false;
-
-        if(debug)// && ( ftree->ev_id == 892573) )
-        {
-            std::cout << "el["              << ie                      << "]: "
-                << " pt= "            << lepMVA_pt
-                << " eta= "           << lepMVA_eta
-                << " miniIsoN= "      << lepMVA_miniRelIsoNeutral
-                << " miniIsoC= "      << lepMVA_miniRelIsoCharged
-                << " jetPtRatio= "    << lepMVA_jetPtRatio
-                << " jetPtRel= "      << lepMVA_jetPtRelv2 
-                << " lepMVATTH= "     << el_lepMVA_Moriond16
-                << " ellepMVA= "      << el_lepMVA                      << std::endl;
-        }
-
-        if(false)
-        {
-            std::cout << ftree->ev_id                   << " "
-                      << lepMVA_pt                      << " "
-                      << lepMVA_eta                     << " "
-                      << elec.phi()                     << " "
-                      << elec.energy()                  << " "
-                      << elec.pdgId()                   << " "
-                      << elec.charge()                  << " "
-                      << lepMVA_jetNDauChargedMVASel    << " "
-                      << miniIsoTTH                     << " "
-                      << lepMVA_miniRelIsoCharged       << " "
-                      << lepMVA_miniRelIsoNeutral       << " "
-                      << lepMVA_jetPtRelv2              << " "
-                      << lepMVA_jetBTagCSV              << " "
-                      << lepMVA_jetPtRatio              << " "
-                      << lepMVA_sip3d                   << " "
-                      << fabs(ftree->el_gsfTrack_PV_dxy.back())                     << " "
-                      << fabs(ftree->el_gsfTrack_PV_dz.back())                      << " "
-                      << ftree->el_mvaNonTrigV0.back()                              << " "
-                      << el_lepMVA_Moriond16
-                      << std::endl;
-        }
 
         if( !isData_ )
         {
@@ -2084,20 +1133,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
         }
 
-        ftree->el_lepMVA_pt.push_back(lepMVA_pt);
-        ftree->el_lepMVA_eta.push_back(lepMVA_eta);
-        ftree->el_lepMVA_miniRelIsoCharged.push_back(lepMVA_miniRelIsoCharged);
-        ftree->el_lepMVA_miniRelIsoNeutral.push_back(lepMVA_miniRelIsoNeutral);
-        ftree->el_lepMVA_jetPtRatio.push_back(lepMVA_jetPtRatio);
-        ftree->el_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
-        ftree->el_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
-        ftree->el_lepMVA_sip3d.push_back(lepMVA_sip3d);
-        ftree->el_lepMVA_dxy.push_back(lepMVA_dxy);
-        ftree->el_lepMVA_dz.push_back(lepMVA_dz);
-        ftree->el_lepMVA_mvaId.push_back(lepMVA_mvaId);
-        ftree->el_lepMVA_jetNDauChargedMVASel.push_back(lepMVA_jetNDauChargedMVASel);
-
-        bool allowCkfMatch = true;
+       bool allowCkfMatch = true;
         float lxyMin = 2.0;
         float probMin = 1e-6;
         uint nHitsBeforeVtxMax = 0;
@@ -2111,15 +1147,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
     ftree->el_n = ftree->el_pt.size();
 
-    // ####################################
-    // #   __  __                         #
-    // #  |  \/  |_   _  ___  _ __  ___   #
-    // #  | |\/| | | | |/ _ \| '_ \/ __|  #
-    // #  | |  | | |_| | (_) | | | \__ \  #
-    // #  |_|  |_|\__,_|\___/|_| |_|___/  #
-    // #                                  #
-    // ####################################
-    //
     int nMuon = muons->size();
     for(int im=0;im<nMuon;im++)
     {
@@ -2375,48 +1402,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_vy.push_back(muon.vy());
         ftree->mu_vz.push_back(muon.vz());
 
-        // mini-iso
-        float miniIso           = -666;
-        float miniIsoTTH        = -666;
-        float miniIsoTTHCharged = -666;
-        float miniIsoTTHNeutral = -666;
-        if( dataFormat_ != "AOD" )
-        {
-
-            // Variables used for stop analysis
-            double EA_miniIso = getEA(muon.eta(), MU_EA_ETA, MU_EA_VALUE);
-            miniIso = getPFIsolation(pfcands,dynamic_cast<const reco::Candidate*>(&muon),*rhoPtr, EA_miniIso, 0.05,0.2,10.,false, false);
-            // -------------------------------------------
-            //
-            // Below: Variables used for ttH analysis
-            float miniIsoR = 10.0/std::min(std::max(float(muon.pt()),float(50.)),float(200.));
-            float EffArea = 0.;
-            float eta = muon.eta();
-
-            if(      fabs(eta) > 0    && fabs(eta) < 0.8 ) EffArea = 0.0735;
-            else if( fabs(eta) >= 0.8 && fabs(eta) < 1.3 ) EffArea = 0.0619;
-            else if( fabs(eta) >= 1.3 && fabs(eta) < 2.0 ) EffArea = 0.0465;
-            else if( fabs(eta) >= 2.0 && fabs(eta) < 2.2 ) EffArea = 0.0433;
-            else if( fabs(eta) >= 2.2 && fabs(eta) < 2.5 ) EffArea = 0.0577;
-
-            float correction = ftree->ev_rho*EffArea*(miniIsoR/0.3)*(miniIsoR/0.3);
-
-            //miniIso = getPFIsolation(pfcands,dynamic_cast<const reco::Candidate*>(&muon),0.05,0.2,10.,false,false);
-
-            float pfIsoCharged      = MuonPfIsoCharged(muon,pfcands,miniIsoR);
-            float pfIsoNeutral      = MuonPfIsoNeutral(muon,pfcands,miniIsoR);
-            float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
-
-            miniIsoTTH        = (pfIsoCharged + pfIsoPUSubtracted) / muon.pt();
-            miniIsoTTHCharged = pfIsoCharged / muon.pt();
-            miniIsoTTHNeutral = pfIsoPUSubtracted / muon.pt();
-            //miniIsoTTHNeutral = pfIsoNeutral;
-            // -------------------------------------------
-        }
-
-        ftree->mu_miniIso.push_back(miniIso);
-        ftree->mu_miniIsoTTH.push_back(miniIsoTTH);
-
         // https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMuonAnalysis#Muon_identification
         ftree->mu_isGoodMuon_AllGlobalMuons.push_back(muon::isGoodMuon(muon,muon::AllGlobalMuons));
         ftree->mu_isGoodMuon_AllStandAloneMuons.push_back(muon::isGoodMuon(muon,muon::AllStandAloneMuons));
@@ -2481,106 +1466,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_isolationR05_nTracks.push_back(isoIsValid ? muon.isolationR05().nTracks : -666.);
         ftree->mu_isolationR05_nJets.push_back(isoIsValid ? muon.isolationR05().nJets : -666.);
 
-        // ttH lepton MVA
-        double mu_pt = muon.pt();
-        double mu_eta = muon.eta();
-        double mu_phi = muon.phi();
-        double mu_lepMVA = -666.;
-        double mu_lepMVA_Moriond16 = -666.;
-
-        float drmin = 0.5;
-        int jcl = -1;
-        for(unsigned int ij=0;ij<jets->size();ij++)
-        {
-            if( jets->at(ij).pt() < 10. ) continue;
-            float dr = GetDeltaR(jets->at(ij).eta(),
-                    jets->at(ij).phi(),
-                    mu_eta,
-                    mu_phi);
-            if( dr < drmin )
-            {
-                drmin = dr;
-                jcl = ij;
-            }
-        }
-
-        lepMVA_pt                                   = mu_pt;
-        lepMVA_eta                                  = mu_eta;
-        lepMVA_miniRelIsoNeutral                    = miniIsoTTHNeutral; //CAREFUL! WAS CHANGED TO MATCH GEOFF DEFINITION...
-        lepMVA_miniRelIsoCharged                    = miniIsoTTHCharged;
-        lepMVA_jetPtRatio                           = (jcl >= 0) ? ptRatioMuon(muon,jets->at(jcl)) : 1.5;
-        lepMVA_jetPtRelv2                           = (jcl >= 0) ? ptRelMuon(muon,jets->at(jcl)) : 0.0;
-        float csv                                   = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
-        lepMVA_jetBTagCSV                           = std::max(double(csv),0.);
-        lepMVA_sip3d                                = fabs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
-        lepMVA_dxy                                  = log(fabs(ftree->mu_innerTrack_PV_dxy.back()));
-        lepMVA_dz                                   = log(fabs(ftree->mu_innerTrack_PV_dz.back()));
-        lepMVA_mvaId                                = ftree->mu_segmentCompatibility.back();
-        lepMVA_jetNDauChargedMVASel                 = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl), *primVtx) : 0.0; //?? correct default value
-        //?? correct DR matching
-        if( fabs(mu_eta) < 1.5 ) mu_lepMVA = mu_reader_b->EvaluateMVA("BDTG method");
-        else                     mu_lepMVA = mu_reader_e->EvaluateMVA("BDTG method");
-
-        mu_lepMVA_Moriond16 = mu_reader->EvaluateMVA("BDTG method");
-
-        ftree->mu_lepMVA.push_back(mu_lepMVA);
-        ftree->mu_lepMVA_Moriond16.push_back(mu_lepMVA_Moriond16);
-        ftree->mu_lepMVA_pt.push_back(lepMVA_pt); 
-        ftree->mu_lepMVA_eta.push_back(lepMVA_eta);
-        ftree->mu_lepMVA_miniRelIsoCharged.push_back(lepMVA_miniRelIsoCharged);
-        ftree->mu_lepMVA_miniRelIsoNeutral.push_back(lepMVA_miniRelIsoNeutral);
-        ftree->mu_lepMVA_jetPtRatio.push_back(lepMVA_jetPtRatio);
-        ftree->mu_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
-        ftree->mu_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
-        ftree->mu_lepMVA_sip3d.push_back(lepMVA_sip3d);
-        ftree->mu_lepMVA_dxy.push_back(lepMVA_dxy);
-        ftree->mu_lepMVA_dz.push_back(lepMVA_dz);
-        ftree->mu_lepMVA_mvaId.push_back(lepMVA_mvaId);
-        ftree->mu_lepMVA_jetNDauChargedMVASel.push_back(lepMVA_jetNDauChargedMVASel);
-
-        float conept = (jcl >= 0) ? conePtMuon(muon,jets->at(jcl)) : -100;
-        ftree->mu_jetConePt_ttH.push_back( conept );
-
-        bool debug = false;
-
-        if(debug)
-        {
-            std::cout << "mu["              << im                      << "]: "
-                << " pt= "            << lepMVA_pt
-                << " eta= "           << lepMVA_eta
-                << " miniIsoN= "      << lepMVA_miniRelIsoNeutral
-                << " miniIsoC= "      << lepMVA_miniRelIsoCharged
-                << " jetPtRatio= "    << lepMVA_jetPtRatio
-                << " jetPtRel= "      << lepMVA_jetPtRelv2 
-                << " lepMVATTH= "     << mu_lepMVA_Moriond16
-                << " mulepMVA= "      << mu_lepMVA                      << std::endl;
-        }
-
-        if(false)
-        {
-            std::cout << ftree->ev_id                   << " "
-                      << lepMVA_pt                      << " "
-                      << lepMVA_eta                     << " "
-                      << muon.phi()                     << " "
-                      << muon.energy()                  << " "
-                      << muon.pdgId()                   << " "
-                      << muon.charge()                  << " "
-                      << lepMVA_jetNDauChargedMVASel    << " "
-                      << miniIsoTTH                     << " "
-                      << lepMVA_miniRelIsoCharged       << " "
-                      << lepMVA_miniRelIsoNeutral       << " "
-                      << lepMVA_jetPtRelv2              << " "
-                      << lepMVA_jetBTagCSV              << " "
-                      << lepMVA_jetPtRatio              << " "
-                      << fabs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back())         << " "
-                      << fabs(ftree->mu_innerTrack_PV_dxy.back())                     << " "
-                      << fabs(ftree->mu_innerTrack_PV_dz.back())                      << " "
-                      << lepMVA_mvaId                   << " "
-                      << mu_lepMVA_Moriond16            << " "
-                      << std::endl;
-        }
-
-
         if( !isData_ )
         {
             // Internal matching
@@ -2642,15 +1527,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
     ftree->mu_n = ftree->mu_pt.size();
 
-    // ########################
-    // #  _                   #
-    // # | |_ __ _ _   _ ___  #
-    // # | __/ _` | | | / __| #
-    // # | || (_| | |_| \__ \ #
-    // #  \__\__,_|\__,_|___/ #
-    // #                      #
-    // ########################
-
     int nTau = taus->size();
     for(int it=0;it<nTau;it++)
     {
@@ -2703,18 +1579,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->tau_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back(tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")); // For Eric
         ftree->tau_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back(tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits"));
 
-        //ftree->tau_byLooseIsolationMVA3newDMwLT.push_back(tau.tauID("byLooseIsolationMVA3newDMwLT"));
-        //ftree->tau_byMediumIsolationMVA3newDMwLT.push_back(tau.tauID("byMediumIsolationMVA3newDMwLT"));
-        //ftree->tau_byTightIsolationMVA3newDMwLT.push_back(tau.tauID("byTightIsolationMVA3newDMwLT"));
-
-        //        ftree->tau_byLooseIsolationMVA3newDMwLT.push_back(tau.tauID("byLooseIsolationMVA3newDMwLT"));
-        //        ftree->tau_byMediumIsolationMVA3newDMwLT.push_back(tau.tauID("byMediumIsolationMVA3newDMwLT"));
-        //        ftree->tau_byTightIsolationMVA3newDMwLT.push_back(tau.tauID("byTightIsolationMVA3newDMwLT"));
-
-        //        ftree->tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3HitsdR03"));
-        //        ftree->tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3HitsdR03"));
-        //        ftree->tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau.tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03"));
-
         ftree->tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byLooseIsolationMVArun2v1DBdR03oldDMwLT"));
         ftree->tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byMediumIsolationMVArun2v1DBdR03oldDMwLT"));
         ftree->tau_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byTightIsolationMVArun2v1DBdR03oldDMwLT"));
@@ -2722,14 +1586,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         ftree->tau_againstMuonLoose3.push_back(tau.tauID("againstMuonLoose3"));
         ftree->tau_againstMuonTight3.push_back(tau.tauID("againstMuonTight3"));
-
-        //ftree->tau_againstElectronVLooseMVA5.push_back(tau.tauID("againstElectronVLooseMVA5"));
-        //ftree->tau_againstElectronLooseMVA5.push_back(tau.tauID("againstElectronLooseMVA5"));
-        //ftree->tau_againstElectronMediumMVA5.push_back(tau.tauID("againstElectronMediumMVA5"));
-
-        //        ftree->tau_againstElectronVLooseMVA5.push_back(tau.tauID("againstElectronVLooseMVA5"));
-        //        ftree->tau_againstElectronLooseMVA5.push_back(tau.tauID("againstElectronLooseMVA5"));
-        //        ftree->tau_againstElectronMediumMVA5.push_back(tau.tauID("againstElectronMediumMVA5"));
 
         ftree->tau_pfEssential_jet_pt.push_back(tau.pfEssential().p4Jet_.pt());
         ftree->tau_pfEssential_jet_eta.push_back(tau.pfEssential().p4Jet_.eta());
@@ -2885,13 +1741,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_looseJetID.push_back(looseJetID);
         ftree->jet_tightJetID.push_back(tightJetID);
 
-        //Quark-gluon tagging
-        const auto jetRef = view_jets->ptrAt(ij);
-        if( ! qgHandle.failedToGet() )
-            ftree->jet_qgtag.push_back((*qgHandle)[jetRef]);
-        else
-            ftree->jet_qgtag.push_back(-666.);
-
         const reco::GenJet* genJet = jet.genJet();
         bool hasGenInfo = (genJet);
         ftree->jet_hasGenJet.push_back(hasGenInfo);
@@ -2957,457 +1806,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_genParton_id.push_back(gen_parton_id);
     }
 
-    // Puppi Jets
-    //
-    if( jetsPuppi.isValid() )
-    {
-        int nJetPuppi = jetsPuppi->size();
-        ftree->jetPuppi_n = nJetPuppi;
-        for(int ij=0;ij<nJetPuppi;ij++)
-        {
-            const pat::Jet& jet = jetsPuppi->at(ij);
-
-            ftree->jetPuppi_pt.push_back(jet.pt());
-            ftree->jetPuppi_eta.push_back(jet.eta());
-            ftree->jetPuppi_phi.push_back(jet.phi());
-            ftree->jetPuppi_m.push_back(jet.mass());
-            ftree->jetPuppi_E.push_back(jet.energy());
-            ftree->jetPuppi_JBP.push_back(jet.bDiscriminator("pfJetBProbabilityBJetTags"));
-            ftree->jetPuppi_JP.push_back(jet.bDiscriminator("pfJetProbabilityBJetTags"));
-            ftree->jetPuppi_TCHP.push_back(jet.bDiscriminator("pfTrackCountingHighPurBJetTags"));
-            ftree->jetPuppi_TCHE.push_back(jet.bDiscriminator("pfTrackCountingHighEffBJetTags"));
-            ftree->jetPuppi_SSVHE.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"));
-            ftree->jetPuppi_SSVHP.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
-            ftree->jetPuppi_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
-
-            ftree->jetPuppi_chargedMultiplicity.push_back(jet.chargedMultiplicity());
-            ftree->jetPuppi_neutralMultiplicity.push_back(jet.neutralMultiplicity());
-            ftree->jetPuppi_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());
-
-            ftree->jetPuppi_jecFactorUncorrected.push_back(jet.jecFactor("Uncorrected"));
-            ftree->jetPuppi_jecFactorL1FastJet.push_back(-666.);
-            ftree->jetPuppi_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
-            ftree->jetPuppi_jecFactorL3Absolute.push_back(jet.jecFactor("L3Absolute"));
-
-            ftree->jetPuppi_ntrk.push_back(jet.associatedTracks().size());
-
-            float CSVIVF = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-            ftree->jetPuppi_CSVv2.push_back(CSVIVF);
-
-            ftree->jetPuppi_partonFlavour.push_back(jet.partonFlavour());
-            ftree->jetPuppi_hadronFlavour.push_back(jet.hadronFlavour());
-
-            ftree->jetPuppi_neutralHadronEnergy.push_back(jet.neutralHadronEnergy());
-            ftree->jetPuppi_neutralEmEnergy.push_back(jet.neutralEmEnergy());
-            ftree->jetPuppi_chargedHadronEnergy.push_back(jet.chargedHadronEnergy());
-            ftree->jetPuppi_chargedEmEnergy.push_back(jet.chargedEmEnergy());
-            ftree->jetPuppi_electronEnergy.push_back(jet.electronEnergy());
-            ftree->jetPuppi_muonEnergy.push_back(jet.muonEnergy());
-            ftree->jetPuppi_photonEnergy.push_back(jet.photonEnergy());
-
-            if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
-                ftree->jetPuppi_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
-            else
-                ftree->jetPuppi_pileupJetId.push_back(-666.);
-
-            const reco::GenJet* genJet = jet.genJet();
-            bool hasGenInfo = (genJet);
-            ftree->jetPuppi_hasGenJet.push_back(hasGenInfo);
-
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
-
-            if( hasGenInfo )
-            {
-                gen_jet_pt = genJet->pt();
-                gen_jet_eta = genJet->eta();
-                gen_jet_phi = genJet->phi();
-                gen_jet_m = genJet->mass();
-                gen_jet_E = genJet->energy();
-                gen_jet_status = genJet->status();
-                gen_jet_id = genJet->pdgId();
-            }
-
-            ftree->jetPuppi_genJet_pt.push_back(gen_jet_pt);
-            ftree->jetPuppi_genJet_eta.push_back(gen_jet_eta);
-            ftree->jetPuppi_genJet_phi.push_back(gen_jet_phi);
-            ftree->jetPuppi_genJet_m.push_back(gen_jet_m);
-            ftree->jetPuppi_genJet_E.push_back(gen_jet_E);
-
-            ftree->jetPuppi_genJet_status.push_back(gen_jet_status);
-            ftree->jetPuppi_genJet_id.push_back(gen_jet_id);
-
-            const reco::GenParticle* genParton = (!isData_) ? jet.genParton() : 0;
-            bool hasGenPartonInfo = (genParton);
-            ftree->jetPuppi_hasGenParton.push_back(hasGenPartonInfo);
-
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
-
-            if( hasGenPartonInfo )
-            {
-                gen_parton_pt = genParton->pt();
-                gen_parton_eta = genParton->eta();
-                gen_parton_phi = genParton->phi();
-                gen_parton_m = genParton->mass();
-                gen_parton_E = genParton->energy();
-                gen_parton_status = genParton->status();
-                gen_parton_id = genParton->pdgId();
-            }
-
-            ftree->jetPuppi_genParton_pt.push_back(gen_parton_pt);
-            ftree->jetPuppi_genParton_eta.push_back(gen_parton_eta);
-            ftree->jetPuppi_genParton_phi.push_back(gen_parton_phi);
-            ftree->jetPuppi_genParton_m.push_back(gen_parton_m);
-            ftree->jetPuppi_genParton_E.push_back(gen_parton_E);
-
-            ftree->jetPuppi_genParton_status.push_back(gen_parton_status);
-            ftree->jetPuppi_genParton_id.push_back(gen_parton_id);
-        }
-    }
-
-    // ak8 jets (W-jets)
-    if( ak8jets.isValid() )
-    {
-        int nak8Jet = ak8jets->size();
-        ftree->ak8jet_n = nak8Jet;
-        for(int ij=0;ij<nak8Jet;ij++)
-        {
-            const pat::Jet& jet = ak8jets->at(ij);
-
-            ftree->ak8jet_pt.push_back(jet.pt());
-            ftree->ak8jet_eta.push_back(jet.eta());
-            ftree->ak8jet_phi.push_back(jet.phi());
-            ftree->ak8jet_m.push_back(jet.mass());
-            ftree->ak8jet_E.push_back(jet.energy());
-
-            ftree->ak8jet_JBP.push_back(jet.bDiscriminator("pfJetBProbabilityBJetTags"));
-            ftree->ak8jet_JP.push_back(jet.bDiscriminator("pfJetProbabilityBJetTags"));
-            ftree->ak8jet_TCHP.push_back(jet.bDiscriminator("pfTrackCountingHighPurBJetTags"));
-            ftree->ak8jet_TCHE.push_back(jet.bDiscriminator("pfTrackCountingHighEffBJetTags"));
-            ftree->ak8jet_SSVHE.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"));
-            ftree->ak8jet_SSVHP.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
-            ftree->ak8jet_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
-
-            ftree->ak8jet_chargedMultiplicity.push_back(jet.chargedMultiplicity());
-            ftree->ak8jet_neutralMultiplicity.push_back(jet.neutralMultiplicity());
-            ftree->ak8jet_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());
-
-            ftree->ak8jet_jecFactorUncorrected.push_back(jet.jecFactor("Uncorrected"));
-            ftree->ak8jet_jecFactorL1FastJet.push_back(jet.jecFactor("L1FastJet"));
-            ftree->ak8jet_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
-            ftree->ak8jet_jecFactorL3Absolute.push_back(jet.jecFactor("L3Absolute"));
-
-            ftree->ak8jet_ntrk.push_back(jet.associatedTracks().size());
-
-            float CSVIVF = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-            ftree->ak8jet_CSVv2.push_back(CSVIVF);
-
-            ftree->ak8jet_partonFlavour.push_back(jet.partonFlavour());
-            ftree->ak8jet_hadronFlavour.push_back(jet.hadronFlavour());
-
-            ftree->ak8jet_neutralHadronEnergy.push_back(jet.neutralHadronEnergy());
-            ftree->ak8jet_neutralEmEnergy.push_back(jet.neutralEmEnergy());
-            ftree->ak8jet_chargedHadronEnergy.push_back(jet.chargedHadronEnergy());
-            ftree->ak8jet_chargedEmEnergy.push_back(jet.chargedEmEnergy());
-            ftree->ak8jet_electronEnergy.push_back(jet.electronEnergy());
-            ftree->ak8jet_muonEnergy.push_back(jet.muonEnergy());
-            ftree->ak8jet_photonEnergy.push_back(jet.photonEnergy());
-
-            if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
-                ftree->ak8jet_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
-            else
-                ftree->ak8jet_pileupJetId.push_back(-666.);
-
-            ftree->ak8jet_jetArea.push_back(jet.jetArea());
-
-            // Jet ID
-            float NHF = jet.neutralHadronEnergyFraction();
-            float NEMF = jet.neutralEmEnergyFraction();
-            float CHF = jet.chargedHadronEnergyFraction();
-            float MUF = jet.muonEnergyFraction();
-            float CEMF = jet.chargedEmEnergyFraction();
-            float NumConst = jet.chargedMultiplicity()+jet.neutralMultiplicity();
-            float CHM = jet.chargedMultiplicity();
-            float eta = jet.eta();
-            bool looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4);
-            bool tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4);
-
-            ftree->ak8jet_looseJetID.push_back(looseJetID);
-            ftree->ak8jet_tightJetID.push_back(tightJetID);
-
-            const reco::GenJet* genJet = jet.genJet();
-            bool hasGenInfo = (genJet);
-            ftree->ak8jet_hasGenJet.push_back(hasGenInfo);
-
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
-
-            if( hasGenInfo )
-            {
-                gen_jet_pt = genJet->pt();
-                gen_jet_eta = genJet->eta();
-                gen_jet_phi = genJet->phi();
-                gen_jet_m = genJet->mass();
-                gen_jet_E = genJet->energy();
-                gen_jet_status = genJet->status();
-                gen_jet_id = genJet->pdgId();
-            }
-
-            ftree->ak8jet_genJet_pt.push_back(gen_jet_pt);
-            ftree->ak8jet_genJet_eta.push_back(gen_jet_eta);
-            ftree->ak8jet_genJet_phi.push_back(gen_jet_phi);
-            ftree->ak8jet_genJet_m.push_back(gen_jet_m);
-            ftree->ak8jet_genJet_E.push_back(gen_jet_E);
-
-            ftree->ak8jet_genJet_status.push_back(gen_jet_status);
-            ftree->ak8jet_genJet_id.push_back(gen_jet_id);
-
-            const reco::GenParticle* genParton = (!isData_) ? jet.genParton() : 0;
-            bool hasGenPartonInfo = (genParton);
-            ftree->ak8jet_hasGenParton.push_back(hasGenPartonInfo);
-
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
-
-            if( hasGenPartonInfo )
-            {
-                gen_parton_pt = genParton->pt();
-                gen_parton_eta = genParton->eta();
-                gen_parton_phi = genParton->phi();
-                gen_parton_m = genParton->mass();
-                gen_parton_E = genParton->energy();
-                gen_parton_status = genParton->status();
-                gen_parton_id = genParton->pdgId();
-            }
-
-            ftree->ak8jet_genParton_pt.push_back(gen_parton_pt);
-            ftree->ak8jet_genParton_eta.push_back(gen_parton_eta);
-            ftree->ak8jet_genParton_phi.push_back(gen_parton_phi);
-            ftree->ak8jet_genParton_m.push_back(gen_parton_m);
-            ftree->ak8jet_genParton_E.push_back(gen_parton_E);
-
-            ftree->ak8jet_genParton_status.push_back(gen_parton_status);
-            ftree->ak8jet_genParton_id.push_back(gen_parton_id);
-
-            // access to the W-tagging variables
-            //	     ftree->ak8jet_tau1.push_back(jet.userFloat("NjettinessAK8:tau1")); //
-            //	     ftree->ak8jet_tau2.push_back(jet.userFloat("NjettinessAK8:tau2")); // Access the n-subjettiness variables
-            //	     ftree->ak8jet_tau3.push_back(jet.userFloat("NjettinessAK8:tau3")); //
-            // not available since 7_6_4
-            ftree->ak8jet_tau1.push_back(-666.); //
-            ftree->ak8jet_tau2.push_back(-666.); // Access the n-subjettiness variables
-            ftree->ak8jet_tau3.push_back(-666.); //
-
-            // not available since 7_6_4
-            //	     ftree->ak8jet_softdrop_mass.push_back(jet.userFloat("ak8PFJetsCHSSoftDropMass")); // access to filtered mass
-            //	     ftree->ak8jet_trimmed_mass.push_back(jet.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
-            //	     ftree->ak8jet_pruned_mass.push_back(jet.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
-            //	     ftree->ak8jet_filtered_mass.push_back(jet.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
-
-            ftree->ak8jet_softdrop_mass.push_back(-666.); // access to filtered mass
-            ftree->ak8jet_trimmed_mass.push_back(-666.);   // access to trimmed mass
-            ftree->ak8jet_pruned_mass.push_back(-666.);     // access to pruned mass
-            ftree->ak8jet_filtered_mass.push_back(-666.); // access to filtered mass
-
-            // access to the top-tagging variables
-            reco::CATopJetTagInfo const * tagInfo =  dynamic_cast<reco::CATopJetTagInfo const *>( jet.tagInfo("caTop"));
-            if ( tagInfo != 0 )
-            {
-                ftree->ak8jet_minMass.push_back(tagInfo->properties().minMass);
-                ftree->ak8jet_topMass.push_back(tagInfo->properties().topMass);
-                ftree->ak8jet_nSubJets.push_back(tagInfo->properties().nSubJets);
-            }
-            else
-            {
-                ftree->ak8jet_minMass.push_back(-666);
-                ftree->ak8jet_topMass.push_back(-666);
-                ftree->ak8jet_nSubJets.push_back(-666);
-            }
-        }
-    }
-
-    // ak10 jets
-    if( ak10jets.isValid() )
-    {
-        int nak10Jet = ak10jets->size();
-        ftree->ak10jet_n = nak10Jet;
-        for(int ij=0;ij<nak10Jet;ij++)
-        {
-            const pat::Jet& jet = ak10jets->at(ij);
-
-            ftree->ak10jet_pt.push_back(jet.pt());
-            ftree->ak10jet_eta.push_back(jet.eta());
-            ftree->ak10jet_phi.push_back(jet.phi());
-            ftree->ak10jet_m.push_back(jet.mass());
-            ftree->ak10jet_E.push_back(jet.energy());
-
-            ftree->ak10jet_JBP.push_back(jet.bDiscriminator("pfJetBProbabilityBJetTags"));
-            ftree->ak10jet_JP.push_back(jet.bDiscriminator("pfJetProbabilityBJetTags"));
-            ftree->ak10jet_TCHP.push_back(jet.bDiscriminator("pfTrackCountingHighPurBJetTags"));
-            ftree->ak10jet_TCHE.push_back(jet.bDiscriminator("pfTrackCountingHighEffBJetTags"));
-            ftree->ak10jet_SSVHE.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"));
-            ftree->ak10jet_SSVHP.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
-            ftree->ak10jet_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
-
-            ftree->ak10jet_chargedMultiplicity.push_back(jet.chargedMultiplicity());
-            ftree->ak10jet_neutralMultiplicity.push_back(jet.neutralMultiplicity());
-            ftree->ak10jet_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());
-
-            ftree->ak10jet_jecFactorUncorrected.push_back(jet.jecFactor("Uncorrected"));
-            ftree->ak10jet_jecFactorL1FastJet.push_back(jet.jecFactor("L1FastJet"));
-            ftree->ak10jet_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
-            ftree->ak10jet_jecFactorL3Absolute.push_back(-666.);
-
-            ftree->ak10jet_ntrk.push_back(jet.associatedTracks().size());
-
-            float CSVIVF = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-            ftree->ak10jet_CSVv2.push_back(CSVIVF);
-
-            ftree->ak10jet_partonFlavour.push_back(jet.partonFlavour());
-            ftree->ak10jet_hadronFlavour.push_back(jet.hadronFlavour());
-
-            ftree->ak10jet_neutralHadronEnergy.push_back(jet.neutralHadronEnergy());
-            ftree->ak10jet_neutralEmEnergy.push_back(jet.neutralEmEnergy());
-            ftree->ak10jet_chargedHadronEnergy.push_back(jet.chargedHadronEnergy());
-            ftree->ak10jet_chargedEmEnergy.push_back(jet.chargedEmEnergy());
-            ftree->ak10jet_electronEnergy.push_back(jet.electronEnergy());
-            ftree->ak10jet_muonEnergy.push_back(jet.muonEnergy());
-            ftree->ak10jet_photonEnergy.push_back(jet.photonEnergy());
-
-            if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
-                ftree->ak10jet_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
-            else
-                ftree->ak10jet_pileupJetId.push_back(-666.);
-
-            ftree->ak10jet_jetArea.push_back(jet.jetArea());
-
-            // Jet ID
-            float NHF = jet.neutralHadronEnergyFraction();
-            float NEMF = jet.neutralEmEnergyFraction();
-            float CHF = jet.chargedHadronEnergyFraction();
-            float MUF = jet.muonEnergyFraction();
-            float CEMF = jet.chargedEmEnergyFraction();
-            float NumConst = jet.chargedMultiplicity()+jet.neutralMultiplicity();
-            float CHM = jet.chargedMultiplicity();
-            float eta = jet.eta();
-            bool looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4);
-            bool tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4);
-
-            ftree->ak10jet_looseJetID.push_back(looseJetID);
-            ftree->ak10jet_tightJetID.push_back(tightJetID);
-
-            const reco::GenJet* genJet = jet.genJet();
-            bool hasGenInfo = (genJet);
-            ftree->ak10jet_hasGenJet.push_back(hasGenInfo);
-
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
-
-            if( hasGenInfo )
-            {
-                gen_jet_pt = genJet->pt();
-                gen_jet_eta = genJet->eta();
-                gen_jet_phi = genJet->phi();
-                gen_jet_m = genJet->mass();
-                gen_jet_E = genJet->energy();
-                gen_jet_status = genJet->status();
-                gen_jet_id = genJet->pdgId();
-            }
-
-            ftree->ak10jet_genJet_pt.push_back(gen_jet_pt);
-            ftree->ak10jet_genJet_eta.push_back(gen_jet_eta);
-            ftree->ak10jet_genJet_phi.push_back(gen_jet_phi);
-            ftree->ak10jet_genJet_m.push_back(gen_jet_m);
-            ftree->ak10jet_genJet_E.push_back(gen_jet_E);
-
-            ftree->ak10jet_genJet_status.push_back(gen_jet_status);
-            ftree->ak10jet_genJet_id.push_back(gen_jet_id);
-
-            const reco::GenParticle* genParton = (!isData_) ? jet.genParton() : 0;
-            bool hasGenPartonInfo = (genParton);
-            ftree->ak10jet_hasGenParton.push_back(hasGenPartonInfo);
-
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
-
-            if( hasGenPartonInfo )
-            {
-                gen_parton_pt = genParton->pt();
-                gen_parton_eta = genParton->eta();
-                gen_parton_phi = genParton->phi();
-                gen_parton_m = genParton->mass();
-                gen_parton_E = genParton->energy();
-                gen_parton_status = genParton->status();
-                gen_parton_id = genParton->pdgId();
-            }
-
-            ftree->ak10jet_genParton_pt.push_back(gen_parton_pt);
-            ftree->ak10jet_genParton_eta.push_back(gen_parton_eta);
-            ftree->ak10jet_genParton_phi.push_back(gen_parton_phi);
-            ftree->ak10jet_genParton_m.push_back(gen_parton_m);
-            ftree->ak10jet_genParton_E.push_back(gen_parton_E);
-
-            ftree->ak10jet_genParton_status.push_back(gen_parton_status);
-            ftree->ak10jet_genParton_id.push_back(gen_parton_id);
-
-            // access to the W-tagging variables
-            ftree->ak10jet_tau1.push_back(jet.userFloat("NjettinessAK8:tau1")); //
-            ftree->ak10jet_tau2.push_back(jet.userFloat("NjettinessAK8:tau2")); // Access the n-subjettiness variables
-            ftree->ak10jet_tau3.push_back(jet.userFloat("NjettinessAK8:tau3")); //
-
-            ftree->ak10jet_softdrop_mass.push_back(jet.userFloat("ak10PFJetsCHSSoftDropMass")); // access to filtered mass
-            ftree->ak10jet_trimmed_mass.push_back(jet.userFloat("ak10PFJetsCHSTrimmedMass"));   // access to trimmed mass
-            ftree->ak10jet_pruned_mass.push_back(jet.userFloat("ak10PFJetsCHSPrunedMass"));     // access to pruned mass
-            ftree->ak10jet_filtered_mass.push_back(jet.userFloat("ak10PFJetsCHSFilteredMass")); // access to filtered mass
-
-            // access to the top-tagging variables
-            reco::CATopJetTagInfo const * tagInfo =  dynamic_cast<reco::CATopJetTagInfo const *>( jet.tagInfo("caTop"));
-            if ( tagInfo != 0 )
-            {
-                ftree->ak10jet_minMass.push_back(tagInfo->properties().minMass);
-                ftree->ak10jet_topMass.push_back(tagInfo->properties().topMass);
-                ftree->ak10jet_nSubJets.push_back(tagInfo->properties().nSubJets);
-            }
-            else
-            {
-                ftree->ak10jet_minMass.push_back(-666);
-                ftree->ak10jet_topMass.push_back(-666);
-                ftree->ak10jet_nSubJets.push_back(-666);
-            }
-        }
-    }
-
     // GenJets
     //
     if( !isData_ )
@@ -3436,86 +1834,12 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         }
     }
 
-    // ##########################
-    //   PF candidates
-    // ##########################
-    //
-    int nPfcand = pfcands->size();
-    ftree->pfcand_n = nPfcand;
-    bool do_sel_pfc = ftree->doWrite("sel_pfcand");
-    for( const pat::PackedCandidate &pfc : *pfcands )
-    {
-        //compute track Iso
-        double trackIso = 0;
-        // run over all pf candidates
-        for( const pat::PackedCandidate &pfc2 : *pfcands )
-        {
-            if(&pfc==&pfc2) continue ; // do not count particle itself
-            if(pfc2.charge()==0) continue;
-            if(fabs(pfc2.dz())>0.1) continue;
-            if(pfc2.pt()<0) continue;
-            if(deltaR(pfc,pfc2)<0.3) trackIso+=pfc2.pt();
-        }
-
-        if(do_sel_pfc)
-        {
-            if(pfc.charge()==0) continue;
-            if(abs(pfc.dz())>=0.1) continue;
-            if(pfc.pt()<=10) continue;
-            if(fabs(pfc.eta())>=2.4) continue;
-            if( (trackIso<6 && pfc.pt()>=60 ) || (trackIso/pfc.pt()<0.1 && pfc.pt()<60) )
-            {
-                ftree->pfcand_pt.push_back(pfc.pt());
-                ftree->pfcand_eta.push_back(pfc.eta());
-                ftree->pfcand_phi.push_back(pfc.phi());
-                ftree->pfcand_E.push_back(pfc.energy());
-                ftree->pfcand_charge.push_back(pfc.charge());
-                ftree->pfcand_id.push_back(pfc.pdgId());
-                ftree->pfcand_dz.push_back(pfc.dz());
-                ftree->pfcand_trackIso.push_back(trackIso);
-            }
-        }
-        else
-        {
-            ftree->pfcand_pt.push_back(pfc.pt());
-            ftree->pfcand_eta.push_back(pfc.eta());
-            ftree->pfcand_phi.push_back(pfc.phi());
-            ftree->pfcand_E.push_back(pfc.energy());
-            ftree->pfcand_charge.push_back(pfc.charge());
-            ftree->pfcand_id.push_back(pfc.pdgId());
-            ftree->pfcand_dz.push_back(pfc.dz());
-            ftree->pfcand_trackIso.push_back(trackIso);
-
-        }
-    }
-
-    this->KeepEvent();
-    if( (applyMETFilters_ && passMETFilters) || !applyMETFilters_ ){
-        //std::cout<<"here we are !"<<std::endl;
-        if(ftree->apply_presel){
-            //std::cout<<"apply preselection !"<<std::endl;
-            //std::cout<<"MET "<<ftree->met_pt<<" "<<ftree->presel_MET_min<<std::endl;
-            if(ftree->n_presel_electrons >= ftree->n_presel_electrons_min &&
-                    ftree->n_presel_muons >= ftree->n_presel_muons_min &&
-                    (ftree->n_presel_electrons+ftree->n_presel_muons) >= ftree->n_presel_leptons_min &&
-                    ftree->n_presel_jets >= ftree->n_presel_jets_min &&
-                    ftree->met_pt >= ftree->presel_MET_min){
-                //std::cout<<"pass "<<std::endl;
-                ftree->tree->Fill();
-            }
-        }
-        else{
-            ftree->tree->Fill();
-        }
-
-    }
-    /*
-       std::cout<<"nof jets passing the preselection: "<<ftree->n_presel_jets<<std::endl;
-       std::cout<<"nof muons passing the preselection: "<<ftree->n_presel_muons<<std::endl;
-       std::cout<<"nof electrons passing the preselection: "<<ftree->n_presel_electrons<<std::endl;
-       */
-
-    delete mc_truth;
+   if( (applyMETFilters_ && passMETFilters) || !applyMETFilters_ )
+     {
+	ftree->tree->Fill();
+     }
+   
+   delete mc_truth;
 }
 
 // ------------ method called when starting to processes a run  ------------

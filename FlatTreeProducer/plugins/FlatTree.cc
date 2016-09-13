@@ -2,23 +2,10 @@
 
 FlatTree::FlatTree(TTree* _tree){
    tree = _tree;
-   n_presel_jets_min = 0;
-   n_presel_electrons_min = 0;
-   n_presel_muons_min = 0;
-   n_presel_leptons_min = 0;
-   presel_MET_min = 0;
-   apply_presel = false;
 }
 
 void FlatTree::Init()
 {
-   n_presel_jets = 0;
-   n_presel_btag = 0;
-   n_presel_electrons = 0;
-   n_presel_muons = 0;
-   n_presel_tau = 0;
-   
-
    ev_run = DEFVAL;
    ev_id = DEFVAL;
    ev_lumi = DEFVAL;
@@ -309,9 +296,6 @@ void FlatTree::Init()
    el_pfIso_sumNeutralHadronEt.clear();
    el_pfIso_sumPhotonEt.clear();
    el_pfIso_sumPUPt.clear();
-   
-   el_miniIso.clear();
-   el_miniIsoTTH.clear();
 
    el_vx.clear();
    el_vy.clear();
@@ -404,24 +388,6 @@ void FlatTree::Init()
    
    el_mediumMVAId.clear();
    el_tightMVAId.clear();
-
-   el_lepMVA.clear();
-   el_lepMVA_Moriond16.clear();
-   
-   el_lepMVA_pt.clear(); 
-   el_lepMVA_eta.clear();
-   el_lepMVA_miniRelIsoCharged.clear();
-   el_lepMVA_miniRelIsoNeutral.clear();
-   el_lepMVA_jetPtRatio.clear();
-   el_lepMVA_jetPtRelv2.clear();
-   el_lepMVA_jetBTagCSV.clear();
-   el_lepMVA_sip3d.clear();
-   el_lepMVA_dxy.clear();
-   el_lepMVA_dz.clear();
-   el_lepMVA_mvaId.clear();
-   el_lepMVA_jetNDauChargedMVASel.clear();
-
-   el_jetConePt_ttH.clear();
 
    el_hasMCMatch.clear();
    el_gen_pt.clear();
@@ -518,9 +484,6 @@ void FlatTree::Init()
    mu_pfSumIso04_sumPhotonEt.clear();
    mu_pfSumIso04_sumPhotonEtHighThreshold.clear();
    mu_pfSumIso04_sumPUPt.clear();
-   
-   mu_miniIso.clear();
-   mu_miniIsoTTH.clear();
 
    mu_isGlobalMuon.clear();
    mu_isTrackerMuon.clear();
@@ -726,24 +689,6 @@ void FlatTree::Init()
    
    mu_type.clear();
 
-   mu_lepMVA.clear();
-   mu_lepMVA_Moriond16.clear();
-
-   mu_lepMVA_pt.clear(); 
-   mu_lepMVA_eta.clear();
-   mu_lepMVA_miniRelIsoCharged.clear();
-   mu_lepMVA_miniRelIsoNeutral.clear();
-   mu_lepMVA_jetPtRatio.clear();
-   mu_lepMVA_jetPtRelv2.clear();
-   mu_lepMVA_jetBTagCSV.clear();
-   mu_lepMVA_sip3d.clear();
-   mu_lepMVA_dxy.clear();
-   mu_lepMVA_dz.clear();
-   mu_lepMVA_mvaId.clear();
-   mu_lepMVA_jetNDauChargedMVASel.clear();
-
-   mu_jetConePt_ttH.clear();
-
    mu_hasMCMatch.clear();
    mu_gen_pt.clear();
    mu_gen_eta.clear();
@@ -790,13 +735,7 @@ void FlatTree::Init()
    tau_byLooseCombinedIsolationDeltaBetaCorr3Hits.clear();
    tau_byMediumCombinedIsolationDeltaBetaCorr3Hits.clear();
    tau_byTightCombinedIsolationDeltaBetaCorr3Hits.clear();
-//   tau_byLooseIsolationMVA3newDMwLT.clear();
-//   tau_byMediumIsolationMVA3newDMwLT.clear();
-//   tau_byTightIsolationMVA3newDMwLT.clear();
 
-//   tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
-//   tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
-//   tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
    tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.clear();
    tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.clear();
    tau_byTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
@@ -804,10 +743,6 @@ void FlatTree::Init()
    
    tau_againstMuonLoose3.clear();
    tau_againstMuonTight3.clear();
-   
-//   tau_againstElectronVLooseMVA5.clear();
-//   tau_againstElectronLooseMVA5.clear();
-//   tau_againstElectronMediumMVA5.clear();
    
    tau_pfEssential_jet_pt.clear();
    tau_pfEssential_jet_eta.clear();
@@ -883,7 +818,6 @@ void FlatTree::Init()
 
    jet_looseJetID.clear();
    jet_tightJetID.clear();
-   jet_qgtag.clear();   
    
    jet_hasGenJet.clear();   
    jet_genJet_pt.clear();
@@ -903,220 +837,6 @@ void FlatTree::Init()
    jet_genParton_status.clear();
    jet_genParton_id.clear();
    
-   jetPuppi_n = 0;
-   jetPuppi_pt.clear();
-   jetPuppi_eta.clear();
-   jetPuppi_phi.clear();
-   jetPuppi_m.clear();
-   jetPuppi_E.clear();
-
-   jetPuppi_ntrk.clear();
-
-   jetPuppi_JBP.clear();
-   jetPuppi_JP.clear();
-   jetPuppi_TCHP.clear();
-   jetPuppi_TCHE.clear();
-   jetPuppi_SSVHE.clear();
-   jetPuppi_SSVHP.clear();
-   jetPuppi_CMVA.clear();
-   jetPuppi_CSVv2.clear();
-   jetPuppi_partonFlavour.clear();
-   jetPuppi_hadronFlavour.clear();
-
-   jetPuppi_neutralHadronEnergy.clear();
-   jetPuppi_neutralEmEnergy.clear();
-   jetPuppi_chargedHadronEnergy.clear();
-   jetPuppi_chargedEmEnergy.clear();
-   jetPuppi_electronEnergy.clear();
-   jetPuppi_muonEnergy.clear();
-   jetPuppi_photonEnergy.clear();
-
-   jetPuppi_chargedMultiplicity.clear();
-   jetPuppi_neutralMultiplicity.clear();
-   jetPuppi_chargedHadronMultiplicity.clear();
-   
-   jetPuppi_jecFactorUncorrected.clear();
-   jetPuppi_jecFactorL1FastJet.clear();
-   jetPuppi_jecFactorL2Relative.clear();
-   jetPuppi_jecFactorL3Absolute.clear();
-   
-   jetPuppi_pileupJetId.clear();
-
-   jetPuppi_hasGenJet.clear();   
-   jetPuppi_genJet_pt.clear();
-   jetPuppi_genJet_eta.clear();
-   jetPuppi_genJet_phi.clear();
-   jetPuppi_genJet_m.clear();
-   jetPuppi_genJet_E.clear();
-   jetPuppi_genJet_status.clear();
-   jetPuppi_genJet_id.clear();
-
-   jetPuppi_hasGenParton.clear();   
-   jetPuppi_genParton_pt.clear();
-   jetPuppi_genParton_eta.clear();
-   jetPuppi_genParton_phi.clear();
-   jetPuppi_genParton_m.clear();
-   jetPuppi_genParton_E.clear();
-   jetPuppi_genParton_status.clear();
-   jetPuppi_genParton_id.clear();
-   
-   
-   //------------------------
-   //  ak8 collection
-   //------------------------
-
-   ak8jet_n = 0;
-   ak8jet_pt.clear();
-   ak8jet_eta.clear();
-   ak8jet_phi.clear();
-   ak8jet_m.clear();
-   ak8jet_E.clear();
-   
-   ak8jet_ntrk.clear();
-   
-   ak8jet_JBP.clear();
-   ak8jet_JP.clear();
-   ak8jet_TCHP.clear();
-   ak8jet_TCHE.clear();
-   ak8jet_SSVHE.clear();
-   ak8jet_SSVHP.clear();
-   ak8jet_CMVA.clear();
-   
-   ak8jet_CSVv2.clear();
-   ak8jet_partonFlavour.clear();
-   ak8jet_hadronFlavour.clear();
-   
-   ak8jet_neutralHadronEnergy.clear();
-   ak8jet_neutralEmEnergy.clear();
-   ak8jet_chargedHadronEnergy.clear();
-   ak8jet_chargedEmEnergy.clear();
-   ak8jet_electronEnergy.clear();
-   ak8jet_muonEnergy.clear();
-   ak8jet_photonEnergy.clear();
-   
-   ak8jet_chargedMultiplicity.clear();
-   ak8jet_neutralMultiplicity.clear();
-   ak8jet_chargedHadronMultiplicity.clear();
-   
-   ak8jet_jetArea.clear();
-   
-   ak8jet_jecFactorUncorrected.clear();
-   ak8jet_jecFactorL1FastJet.clear();
-   ak8jet_jecFactorL2Relative.clear();
-   ak8jet_jecFactorL3Absolute.clear();
-   
-   ak8jet_pileupJetId.clear();
-   
-   ak8jet_looseJetID.clear();
-   ak8jet_tightJetID.clear();
-   
-   ak8jet_hasGenJet.clear();
-   ak8jet_genJet_pt.clear();
-   ak8jet_genJet_eta.clear();
-   ak8jet_genJet_phi.clear();
-   ak8jet_genJet_m.clear();
-   ak8jet_genJet_E.clear();
-   ak8jet_genJet_status.clear();
-   ak8jet_genJet_id.clear();
-   
-   ak8jet_hasGenParton.clear();
-   ak8jet_genParton_pt.clear();
-   ak8jet_genParton_eta.clear();
-   ak8jet_genParton_phi.clear();
-   ak8jet_genParton_m.clear();
-   ak8jet_genParton_E.clear();
-   ak8jet_genParton_status.clear();
-   ak8jet_genParton_id.clear();
-   
-   ak8jet_tau1.clear();
-   ak8jet_tau2.clear();
-   ak8jet_tau3.clear();
-   ak8jet_softdrop_mass.clear();
-   ak8jet_trimmed_mass.clear();
-   ak8jet_pruned_mass.clear();
-   ak8jet_filtered_mass.clear();
-   ak8jet_minMass.clear();
-   ak8jet_topMass.clear();
-   ak8jet_nSubJets.clear();
-  
-   //------------------------
-   //  ak10 collection
-   //------------------------
-   
-   ak10jet_n = 0;
-   ak10jet_pt.clear();
-   ak10jet_eta.clear();
-   ak10jet_phi.clear();
-   ak10jet_m.clear();
-   ak10jet_E.clear();
-   
-   ak10jet_ntrk.clear();
-   
-   ak10jet_JBP.clear();
-   ak10jet_JP.clear();
-   ak10jet_TCHP.clear();
-   ak10jet_TCHE.clear();
-   ak10jet_SSVHE.clear();
-   ak10jet_SSVHP.clear();
-   ak10jet_CMVA.clear();
-   
-   ak10jet_CSVv2.clear();
-   ak10jet_partonFlavour.clear();
-   ak10jet_hadronFlavour.clear();
-   
-   ak10jet_neutralHadronEnergy.clear();
-   ak10jet_neutralEmEnergy.clear();
-   ak10jet_chargedHadronEnergy.clear();
-   ak10jet_chargedEmEnergy.clear();
-   ak10jet_electronEnergy.clear();
-   ak10jet_muonEnergy.clear();
-   ak10jet_photonEnergy.clear();
-   
-   ak10jet_chargedMultiplicity.clear();
-   ak10jet_neutralMultiplicity.clear();
-   ak10jet_chargedHadronMultiplicity.clear();
-   
-   ak10jet_jetArea.clear();
-   
-   ak10jet_jecFactorUncorrected.clear();
-   ak10jet_jecFactorL1FastJet.clear();
-   ak10jet_jecFactorL2Relative.clear();
-   ak10jet_jecFactorL3Absolute.clear();
-   
-   ak10jet_pileupJetId.clear();
-   
-   ak10jet_looseJetID.clear();
-   ak10jet_tightJetID.clear();
-   
-   ak10jet_hasGenJet.clear();
-   ak10jet_genJet_pt.clear();
-   ak10jet_genJet_eta.clear();
-   ak10jet_genJet_phi.clear();
-   ak10jet_genJet_m.clear();
-   ak10jet_genJet_E.clear();
-   ak10jet_genJet_status.clear();
-   ak10jet_genJet_id.clear();
-   
-   ak10jet_hasGenParton.clear();
-   ak10jet_genParton_pt.clear();
-   ak10jet_genParton_eta.clear();
-   ak10jet_genParton_phi.clear();
-   ak10jet_genParton_m.clear();
-   ak10jet_genParton_E.clear();
-   ak10jet_genParton_status.clear();
-   ak10jet_genParton_id.clear();
-   
-   ak10jet_tau1.clear();
-   ak10jet_tau2.clear();
-   ak10jet_tau3.clear();
-   ak10jet_softdrop_mass.clear();
-   ak10jet_trimmed_mass.clear();
-   ak10jet_pruned_mass.clear();
-   ak10jet_filtered_mass.clear();
-   ak10jet_minMass.clear();
-   ak10jet_topMass.clear();
-   ak10jet_nSubJets.clear();
-   
    //------------------------
    //  GenJet collection
    //------------------------
@@ -1132,25 +852,6 @@ void FlatTree::Init()
    genJet_invisibleEnergy.clear();
    genJet_auxiliaryEnergy.clear();
    genJet_flavour.clear();
-   
-   pfcand_n = 0;
-   pfcand_pt.clear();
-   pfcand_eta.clear();
-   pfcand_phi.clear();
-   pfcand_E.clear();
-   pfcand_charge.clear();
-   pfcand_id.clear();
-   pfcand_dz.clear();
-   pfcand_trackIso.clear();
-
- 
-   
-   //------------------------
-   //  GenInfo stop
-   //------------------------
-   gen_stop_m.clear();
-   gen_neutralino_m.clear();
-
 }
 
 void FlatTree::CreateBranches(int buffersize = 32000)
@@ -1441,9 +1142,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_pfIso_sumPhotonEt") ) tree->Branch("el_pfIso_sumPhotonEt", "std::vector<float>", &el_pfIso_sumPhotonEt, buffersize);
    if( doWrite("el_pfIso_sumPUPt") ) tree->Branch("el_pfIso_sumPUPt", "std::vector<float>", &el_pfIso_sumPUPt, buffersize);
    
-   if( doWrite("el_miniIso") ) tree->Branch("el_miniIso", "std::vector<float>", &el_miniIso, buffersize);
-   if( doWrite("el_miniIsoTTH") ) tree->Branch("el_miniIsoTTH", "std::vector<float>", &el_miniIsoTTH, buffersize);
-   
    if( doWrite("el_vx") ) tree->Branch("el_vx", "std::vector<float>", &el_vx, buffersize);
    if( doWrite("el_vy") ) tree->Branch("el_vy", "std::vector<float>", &el_vy, buffersize);
    if( doWrite("el_vz") ) tree->Branch("el_vz", "std::vector<float>", &el_vz, buffersize);
@@ -1533,24 +1231,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_mediumStopID") ) tree->Branch("el_mediumStopID", "std::vector<bool>", &el_mediumStopID, buffersize);
    if( doWrite("el_mediumMVAId") ) tree->Branch("el_mediumMVAId", "std::vector<bool>", &el_mediumMVAId, buffersize);
    if( doWrite("el_tightMVAId") ) tree->Branch("el_tightMVAId", "std::vector<bool>", &el_tightMVAId, buffersize);
-   
-   if( doWrite("el_lepMVA") ) tree->Branch("el_lepMVA", "std::vector<float>", &el_lepMVA, buffersize);
-   if( doWrite("el_lepMVA_Moriond16") ) tree->Branch("el_lepMVA_Moriond16", "std::vector<float>", &el_lepMVA_Moriond16, buffersize);
-
-   if( doWrite("el_lepMVA_pt") ) tree->Branch("el_lepMVA_pt", "std::vector<float>", &el_lepMVA_pt, buffersize);
-   if( doWrite("el_lepMVA_eta") ) tree->Branch("el_lepMVA_eta", "std::vector<float>", &el_lepMVA_eta, buffersize);
-   if( doWrite("el_lepMVA_miniRelIsoCharged") ) tree->Branch("el_lepMVA_miniRelIsoCharged", "std::vector<float>", &el_lepMVA_miniRelIsoCharged, buffersize);
-   if( doWrite("el_lepMVA_miniRelIsoNeutral") ) tree->Branch("el_lepMVA_miniRelIsoNeutral", "std::vector<float>", &el_lepMVA_miniRelIsoNeutral, buffersize);
-   if( doWrite("el_lepMVA_jetPtRatio") ) tree->Branch("el_lepMVA_jetPtRatio", "std::vector<float>", &el_lepMVA_jetPtRatio, buffersize);
-   if( doWrite("el_lepMVA_jetPtRelv2") ) tree->Branch("el_lepMVA_jetPtRelv2", "std::vector<float>", &el_lepMVA_jetPtRelv2, buffersize);
-   if( doWrite("el_lepMVA_jetBTagCSV") ) tree->Branch("el_lepMVA_jetBTagCSV", "std::vector<float>", &el_lepMVA_jetBTagCSV, buffersize);
-   if( doWrite("el_lepMVA_sip3d") ) tree->Branch("el_lepMVA_sip3d", "std::vector<float>", &el_lepMVA_sip3d, buffersize);
-   if( doWrite("el_lepMVA_dxy") ) tree->Branch("el_lepMVA_dxy", "std::vector<float>", &el_lepMVA_dxy, buffersize);
-   if( doWrite("el_lepMVA_dz") ) tree->Branch("el_lepMVA_dz", "std::vector<float>", &el_lepMVA_dz, buffersize);
-   if( doWrite("el_lepMVA_mvaId") ) tree->Branch("el_lepMVA_mvaId", "std::vector<float>", &el_lepMVA_mvaId, buffersize);
-   if( doWrite("el_lepMVA_jetNDauChargedMVASel") ) tree->Branch("el_lepMVA_jetNDauChargedMVASel", "std::vector<float>", &el_lepMVA_jetNDauChargedMVASel, buffersize);
-
-   if( doWrite("el_jetConePt_ttH") ) tree->Branch("el_jetConePt_ttH", "std::vector<float>", &el_jetConePt_ttH, buffersize);
 
    if( doWrite("el_hasMCMatch") ) tree->Branch("el_hasMCMatch", "std::vector<int>", &el_hasMCMatch, buffersize);
    if( doWrite("el_gen_pt") ) tree->Branch("el_gen_pt", "std::vector<float>", &el_gen_pt, buffersize);
@@ -1647,9 +1327,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_pfSumIso04_sumPhotonEt") ) tree->Branch("mu_pfSumIso04_sumPhotonEt", "std::vector<float>", &mu_pfSumIso04_sumPhotonEt, buffersize);
    if( doWrite("mu_pfSumIso04_sumPhotonEtHighThreshold") ) tree->Branch("mu_pfSumIso04_sumPhotonEtHighThreshold", "std::vector<float>", &mu_pfSumIso04_sumPhotonEtHighThreshold, buffersize);
    if( doWrite("mu_pfSumIso04_sumPUPt") ) tree->Branch("mu_pfSumIso04_sumPUPt", "std::vector<float>", &mu_pfSumIso04_sumPUPt, buffersize);
-   
-   if( doWrite("mu_miniIso") ) tree->Branch("mu_miniIso", "std::vector<float>", &mu_miniIso, buffersize);
-   if( doWrite("mu_miniIsoTTH") ) tree->Branch("mu_miniIsoTTH", "std::vector<float>", &mu_miniIsoTTH, buffersize);
 
    if( doWrite("mu_isGlobalMuon") ) tree->Branch("mu_isGlobalMuon", "std::vector<int>", &mu_isGlobalMuon, buffersize);
    if( doWrite("mu_isTrackerMuon") ) tree->Branch("mu_isTrackerMuon", "std::vector<int>", &mu_isTrackerMuon, buffersize);
@@ -1854,24 +1531,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_innerTrack_validFraction") ) tree->Branch("mu_innerTrack_validFraction", "std::vector<float>", &mu_innerTrack_validFraction, buffersize);
    
    if( doWrite("mu_type") ) tree->Branch("mu_type", "std::vector<int>", &mu_type, buffersize);
-   
-   if( doWrite("mu_lepMVA") ) tree->Branch("mu_lepMVA", "std::vector<float>", &mu_lepMVA, buffersize);
-   if( doWrite("mu_lepMVA_Moriond16") ) tree->Branch("mu_lepMVA_Moriond16", "std::vector<float>", &mu_lepMVA_Moriond16, buffersize);
-
-   if( doWrite("mu_lepMVA_pt") ) tree->Branch("mu_lepMVA_pt", "std::vector<float>", &mu_lepMVA_pt, buffersize);
-   if( doWrite("mu_lepMVA_eta") ) tree->Branch("mu_lepMVA_eta", "std::vector<float>", &mu_lepMVA_eta, buffersize);
-   if( doWrite("mu_lepMVA_miniRelIsoCharged") ) tree->Branch("mu_lepMVA_miniRelIsoCharged", "std::vector<float>", &mu_lepMVA_miniRelIsoCharged, buffersize);
-   if( doWrite("mu_lepMVA_miniRelIsoNeutral") ) tree->Branch("mu_lepMVA_miniRelIsoNeutral", "std::vector<float>", &mu_lepMVA_miniRelIsoNeutral, buffersize);
-   if( doWrite("mu_lepMVA_jetPtRatio") ) tree->Branch("mu_lepMVA_jetPtRatio", "std::vector<float>", &mu_lepMVA_jetPtRatio, buffersize);
-   if( doWrite("mu_lepMVA_jetPtRelv2") ) tree->Branch("mu_lepMVA_jetPtRelv2", "std::vector<float>", &mu_lepMVA_jetPtRelv2, buffersize);
-   if( doWrite("mu_lepMVA_jetBTagCSV") ) tree->Branch("mu_lepMVA_jetBTagCSV", "std::vector<float>", &mu_lepMVA_jetBTagCSV, buffersize);
-   if( doWrite("mu_lepMVA_sip3d") ) tree->Branch("mu_lepMVA_sip3d", "std::vector<float>", &mu_lepMVA_sip3d, buffersize);
-   if( doWrite("mu_lepMVA_dxy") ) tree->Branch("mu_lepMVA_dxy", "std::vector<float>", &mu_lepMVA_dxy, buffersize);
-   if( doWrite("mu_lepMVA_dz") ) tree->Branch("mu_lepMVA_dz", "std::vector<float>", &mu_lepMVA_dz, buffersize);
-   if( doWrite("mu_lepMVA_mvaId") ) tree->Branch("mu_lepMVA_mvaId", "std::vector<float>", &mu_lepMVA_mvaId, buffersize);
-   if( doWrite("mu_lepMVA_jetNDauChargedMVASel") ) tree->Branch("mu_lepMVA_jetNDauChargedMVASel", "std::vector<float>", &mu_lepMVA_jetNDauChargedMVASel, buffersize);
-
-   if( doWrite("mu_jetConePt_ttH") ) tree->Branch("mu_jetConePt_ttH", "std::vector<float>", &mu_jetConePt_ttH, buffersize);
 
    if( doWrite("mu_hasMCMatch") ) tree->Branch("mu_hasMCMatch", "std::vector<int>", &mu_hasMCMatch, buffersize);
    if( doWrite("mu_gen_pt") ) tree->Branch("mu_gen_pt", "std::vector<float>", &mu_gen_pt, buffersize);
@@ -1919,13 +1578,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_byLooseCombinedIsolationDeltaBetaCorr3Hits") ) tree->Branch("tau_byLooseCombinedIsolationDeltaBetaCorr3Hits", "std::vector<float>", &tau_byLooseCombinedIsolationDeltaBetaCorr3Hits, buffersize);
    if( doWrite("tau_byMediumCombinedIsolationDeltaBetaCorr3Hits") ) tree->Branch("tau_byMediumCombinedIsolationDeltaBetaCorr3Hits", "std::vector<float>", &tau_byMediumCombinedIsolationDeltaBetaCorr3Hits, buffersize);
    if( doWrite("tau_byTightCombinedIsolationDeltaBetaCorr3Hits") ) tree->Branch("tau_byTightCombinedIsolationDeltaBetaCorr3Hits", "std::vector<float>", &tau_byTightCombinedIsolationDeltaBetaCorr3Hits, buffersize);
-//   if( doWrite("tau_byLooseIsolationMVA3newDMwLT") ) tree->Branch("tau_byLooseIsolationMVA3newDMwLT", "std::vector<float>", &tau_byLooseIsolationMVA3newDMwLT, buffersize);
-//   if( doWrite("tau_byMediumIsolationMVA3newDMwLT") ) tree->Branch("tau_byMediumIsolationMVA3newDMwLT", "std::vector<float>", &tau_byMediumIsolationMVA3newDMwLT, buffersize);
-//   if( doWrite("tau_byTightIsolationMVA3newDMwLT") ) tree->Branch("tau_byTightIsolationMVA3newDMwLT", "std::vector<float>", &tau_byTightIsolationMVA3newDMwLT, buffersize);
- 
-//   if( doWrite("tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03") ) tree->Branch("tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03", "std::vector<float>", &tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03, buffersize);
-//   if( doWrite("tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03") ) tree->Branch("tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03", "std::vector<float>", &tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03, buffersize);
-//   if( doWrite("tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03") ) tree->Branch("tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03", "std::vector<float>", &tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03, buffersize);
+
    if( doWrite("tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT") ) tree->Branch("tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT", "std::vector<float>", &tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT, buffersize);
    if( doWrite("tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT") ) tree->Branch("tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT", "std::vector<float>", &tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT, buffersize);
    if( doWrite("tau_byTightIsolationMVArun2v1DBdR03oldDMwLT") ) tree->Branch("tau_byTightIsolationMVArun2v1DBdR03oldDMwLT", "std::vector<float>", &tau_byTightIsolationMVArun2v1DBdR03oldDMwLT, buffersize);
@@ -1933,10 +1586,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
   
    if( doWrite("tau_againstMuonLoose3") ) tree->Branch("tau_againstMuonLoose3", "std::vector<float>", &tau_againstMuonLoose3, buffersize);
    if( doWrite("tau_againstMuonTight3") ) tree->Branch("tau_againstMuonTight3", "std::vector<float>", &tau_againstMuonTight3, buffersize);
-   
-//   if( doWrite("tau_againstElectronVLooseMVA5") ) tree->Branch("tau_againstElectronVLooseMVA5", "std::vector<float>", &tau_againstElectronVLooseMVA5, buffersize);
-//   if( doWrite("tau_againstElectronLooseMVA5") ) tree->Branch("tau_againstElectronLooseMVA5", "std::vector<float>", &tau_againstElectronLooseMVA5, buffersize);
-//   if( doWrite("tau_againstElectronMediumMVA5") ) tree->Branch("tau_againstElectronMediumMVA5", "std::vector<float>", &tau_againstElectronMediumMVA5, buffersize);
    
    if( doWrite("tau_pfEssential_jet_pt") ) tree->Branch("tau_pfEssential_jet_pt", "std::vector<float>", &tau_pfEssential_jet_pt, buffersize);
    if( doWrite("tau_pfEssential_jet_eta") ) tree->Branch("tau_pfEssential_jet_eta", "std::vector<float>", &tau_pfEssential_jet_eta, buffersize);
@@ -2012,7 +1661,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    
    if( doWrite("jet_looseJetID") ) tree->Branch("jet_looseJetID", "std::vector<bool>", &jet_looseJetID, buffersize);
    if( doWrite("jet_tightJetID") ) tree->Branch("jet_tightJetID", "std::vector<bool>", &jet_tightJetID, buffersize);
-   if( doWrite("jet_qgtag") ) tree->Branch("jet_qgtag", "std::vector<float>", &jet_qgtag, buffersize);
 
    if( doWrite("jet_hasGenJet") ) tree->Branch("jet_hasGenJet", "std::vector<bool>", &jet_hasGenJet, buffersize);   
    if( doWrite("jet_genJet_pt") ) tree->Branch("jet_genJet_pt", "std::vector<float>", &jet_genJet_pt, buffersize);
@@ -2030,228 +1678,11 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_genParton_m") ) tree->Branch("jet_genParton_m", "std::vector<float>", &jet_genParton_m, buffersize);
    if( doWrite("jet_genParton_E") ) tree->Branch("jet_genParton_E", "std::vector<float>", &jet_genParton_E, buffersize);
    if( doWrite("jet_genParton_status") ) tree->Branch("jet_genParton_status", "std::vector<int>", &jet_genParton_status, buffersize);
-   if( doWrite("jet_genParton_id") ) tree->Branch("jet_genParton_id", "std::vector<int>", &jet_genParton_id, buffersize);
-   
-   if( doWrite("jetPuppi_n") ) tree->Branch("jetPuppi_n", &jetPuppi_n, "jetPuppi_n/I", buffersize);
-   if( doWrite("jetPuppi_pt") ) tree->Branch("jetPuppi_pt", "std::vector<float>", &jetPuppi_pt, buffersize);
-   if( doWrite("jetPuppi_eta") ) tree->Branch("jetPuppi_eta", "std::vector<float>", &jetPuppi_eta, buffersize);
-   if( doWrite("jetPuppi_phi") ) tree->Branch("jetPuppi_phi", "std::vector<float>", &jetPuppi_phi, buffersize);
-   if( doWrite("jetPuppi_m") ) tree->Branch("jetPuppi_m", "std::vector<float>", &jetPuppi_m, buffersize);
-   if( doWrite("jetPuppi_E") ) tree->Branch("jetPuppi_E", "std::vector<float>", &jetPuppi_E, buffersize);
-
-   if( doWrite("jetPuppi_ntrk") ) tree->Branch("jetPuppi_ntrk", "std::vector<int>", &jetPuppi_ntrk, buffersize);
-
-   if( doWrite("jetPuppi_JBP") ) tree->Branch("jetPuppi_JBP", "std::vector<float>", &jetPuppi_JBP, buffersize);
-   if( doWrite("jetPuppi_JP") ) tree->Branch("jetPuppi_JP", "std::vector<float>", &jetPuppi_JP, buffersize);
-   if( doWrite("jetPuppi_TCHP") ) tree->Branch("jetPuppi_TCHP", "std::vector<float>", &jetPuppi_TCHP, buffersize);
-   if( doWrite("jetPuppi_TCHE") ) tree->Branch("jetPuppi_TCHE", "std::vector<float>", &jetPuppi_TCHE, buffersize);
-   if( doWrite("jetPuppi_SSVHE") ) tree->Branch("jetPuppi_SSVHE", "std::vector<float>", &jetPuppi_SSVHE, buffersize);
-   if( doWrite("jetPuppi_SSVHP") ) tree->Branch("jetPuppi_SSVHP", "std::vector<float>", &jetPuppi_SSVHP, buffersize);
-   if( doWrite("jetPuppi_CMVA") ) tree->Branch("jetPuppi_CMVA", "std::vector<float>", &jetPuppi_CMVA, buffersize);
-   if( doWrite("jetPuppi_CSVv2") ) tree->Branch("jetPuppi_CSVv2", "std::vector<float>", &jetPuppi_CSVv2, buffersize);
-   if( doWrite("jetPuppi_partonFlavour") ) tree->Branch("jetPuppi_partonFlavour", "std::vector<int>", &jetPuppi_partonFlavour, buffersize);
-   if( doWrite("jetPuppi_hadronFlavour") ) tree->Branch("jetPuppi_hadronFlavour", "std::vector<int>", &jetPuppi_hadronFlavour, buffersize);
-
-   if( doWrite("jetPuppi_neutralHadronEnergy") ) tree->Branch("jetPuppi_neutralHadronEnergy", "std::vector<float>", &jetPuppi_neutralHadronEnergy, buffersize);
-   if( doWrite("jetPuppi_neutralEmEnergy") ) tree->Branch("jetPuppi_neutralEmEnergy", "std::vector<float>", &jetPuppi_neutralEmEnergy, buffersize);
-   if( doWrite("jetPuppi_chargedHadronEnergy") ) tree->Branch("jetPuppi_chargedHadronEnergy", "std::vector<float>", &jetPuppi_chargedHadronEnergy, buffersize);
-   if( doWrite("jetPuppi_chargedEmEnergy") ) tree->Branch("jetPuppi_chargedEmEnergy", "std::vector<float>", &jetPuppi_chargedEmEnergy, buffersize);
-   if( doWrite("jetPuppi_electronEnergy") ) tree->Branch("jetPuppi_electronEnergy", "std::vector<float>", &jetPuppi_electronEnergy, buffersize);
-   if( doWrite("jetPuppi_muonEnergy") ) tree->Branch("jetPuppi_muonEnergy", "std::vector<float>", &jetPuppi_muonEnergy, buffersize);
-   if( doWrite("jetPuppi_photonEnergy") ) tree->Branch("jetPuppi_photonEnergy", "std::vector<float>", &jetPuppi_photonEnergy, buffersize);
-
-   if( doWrite("jetPuppi_chargedMultiplicity") ) tree->Branch("jetPuppi_chargedMultiplicity", "std::vector<int>", &jetPuppi_chargedMultiplicity, buffersize);
-   if( doWrite("jetPuppi_neutralMultiplicity") ) tree->Branch("jetPuppi_neutralMultiplicity", "std::vector<int>", &jetPuppi_neutralMultiplicity, buffersize);
-   if( doWrite("jetPuppi_chargedHadronMultiplicity") ) tree->Branch("jetPuppi_chargedHadronMultiplicity", "std::vector<int>", &jetPuppi_chargedHadronMultiplicity, buffersize);
-   
-   if( doWrite("jetPuppi_jecFactorUncorrected") ) tree->Branch("jetPuppi_jecFactorUncorrected", "std::vector<float>", &jetPuppi_jecFactorUncorrected, buffersize);
-   if( doWrite("jetPuppi_jecFactorL1FastJet") ) tree->Branch("jetPuppi_jecFactorL1FastJet", "std::vector<float>", &jetPuppi_jecFactorL1FastJet, buffersize);
-   if( doWrite("jetPuppi_jecFactorL2Relative") ) tree->Branch("jetPuppi_jecFactorL2Relative", "std::vector<float>", &jetPuppi_jecFactorL2Relative, buffersize);
-   if( doWrite("jetPuppi_jecFactorL3Absolute") ) tree->Branch("jetPuppi_jecFactorL3Absolute", "std::vector<float>", &jetPuppi_jecFactorL3Absolute, buffersize);
-   
-   if( doWrite("jetPuppi_pileupJetId") ) tree->Branch("jetPuppi_pileupJetId", "std::vector<float>", &jetPuppi_pileupJetId, buffersize);
-
-   if( doWrite("jetPuppi_hasGenJet") ) tree->Branch("jetPuppi_hasGenJet", "std::vector<bool>", &jetPuppi_hasGenJet, buffersize);   
-   if( doWrite("jetPuppi_genJet_pt") ) tree->Branch("jetPuppi_genJet_pt", "std::vector<float>", &jetPuppi_genJet_pt, buffersize);
-   if( doWrite("jetPuppi_genJet_eta") ) tree->Branch("jetPuppi_genJet_eta", "std::vector<float>", &jetPuppi_genJet_eta, buffersize);
-   if( doWrite("jetPuppi_genJet_phi") ) tree->Branch("jetPuppi_genJet_phi", "std::vector<float>", &jetPuppi_genJet_phi, buffersize);
-   if( doWrite("jetPuppi_genJet_m") ) tree->Branch("jetPuppi_genJet_m", "std::vector<float>", &jetPuppi_genJet_m, buffersize);
-   if( doWrite("jetPuppi_genJet_E") ) tree->Branch("jetPuppi_genJet_E", "std::vector<float>", &jetPuppi_genJet_E, buffersize);
-   if( doWrite("jetPuppi_genJet_status") ) tree->Branch("jetPuppi_genJet_status", "std::vector<int>", &jetPuppi_genJet_status, buffersize);
-   if( doWrite("jetPuppi_genJet_id") ) tree->Branch("jetPuppi_genJet_id", "std::vector<int>", &jetPuppi_genJet_id, buffersize);       
-
-   if( doWrite("jetPuppi_hasGenParton") ) tree->Branch("jetPuppi_hasGenJet", "std::vector<bool>", &jetPuppi_hasGenParton, buffersize);   
-   if( doWrite("jetPuppi_genParton_pt") ) tree->Branch("jetPuppi_genParton_pt", "std::vector<float>", &jetPuppi_genParton_pt, buffersize);
-   if( doWrite("jetPuppi_genParton_eta") ) tree->Branch("jetPuppi_genParton_eta", "std::vector<float>", &jetPuppi_genParton_eta, buffersize);
-   if( doWrite("jetPuppi_genParton_phi") ) tree->Branch("jetPuppi_genParton_phi", "std::vector<float>", &jetPuppi_genParton_phi, buffersize);
-   if( doWrite("jetPuppi_genParton_m") ) tree->Branch("jetPuppi_genParton_m", "std::vector<float>", &jetPuppi_genParton_m, buffersize);
-   if( doWrite("jetPuppi_genParton_E") ) tree->Branch("jetPuppi_genParton_E", "std::vector<float>", &jetPuppi_genParton_E, buffersize);
-   if( doWrite("jetPuppi_genParton_status") ) tree->Branch("jetPuppi_genParton_status", "std::vector<int>", &jetPuppi_genParton_status, buffersize);
-   if( doWrite("jetPuppi_genParton_id") ) tree->Branch("jetPuppi_genParton_id", "std::vector<int>", &jetPuppi_genParton_id, buffersize);       
-   
-   
-   //------------------------
-   //  ak8 collection
-   //------------------------
-
-   if( doWrite("ak8jet_n") ) tree->Branch("ak8jet_n", &ak8jet_n, "ak8jet_n/I", buffersize);
-   if( doWrite("ak8jet_pt") ) tree->Branch("ak8jet_pt", "std::vector<float>", &ak8jet_pt, buffersize);
-   if( doWrite("ak8jet_eta") ) tree->Branch("ak8jet_eta", "std::vector<float>", &ak8jet_eta, buffersize);
-   if( doWrite("ak8jet_phi") ) tree->Branch("ak8jet_phi", "std::vector<float>", &ak8jet_phi, buffersize);
-   if( doWrite("ak8jet_m") ) tree->Branch("ak8jet_m", "std::vector<float>", &ak8jet_m, buffersize);
-   if( doWrite("ak8jet_E") ) tree->Branch("ak8jet_E", "std::vector<float>", &ak8jet_E, buffersize);
-   
-   if( doWrite("ak8jet_ntrk") ) tree->Branch("ak8jet_ntrk", "std::vector<int>", &ak8jet_ntrk, buffersize);
-   
-   if( doWrite("ak8jet_JBP") ) tree->Branch("ak8jet_JBP", "std::vector<float>", &ak8jet_JBP, buffersize);
-   if( doWrite("ak8jet_JP") ) tree->Branch("ak8jet_JP", "std::vector<float>", &ak8jet_JP, buffersize);
-   if( doWrite("ak8jet_TCHP") ) tree->Branch("ak8jet_TCHP", "std::vector<float>", &ak8jet_TCHP, buffersize);
-   if( doWrite("ak8jet_TCHE") ) tree->Branch("ak8jet_TCHE", "std::vector<float>", &ak8jet_TCHE, buffersize);
-   if( doWrite("ak8jet_SSVHE") ) tree->Branch("ak8jet_SSVHE", "std::vector<float>", &ak8jet_SSVHE, buffersize);
-   if( doWrite("ak8jet_SSVHP") ) tree->Branch("ak8jet_SSVHP", "std::vector<float>", &ak8jet_SSVHP, buffersize);
-   if( doWrite("ak8jet_CMVA") ) tree->Branch("ak8jet_CMVA", "std::vector<float>", &ak8jet_CMVA, buffersize);
-   
-   if( doWrite("ak8jet_CSVv2") ) tree->Branch("ak8jet_CSVv2", "std::vector<float>", &ak8jet_CSVv2, buffersize);
-   if( doWrite("ak8jet_partonFlavour") ) tree->Branch("ak8jet_partonFlavour", "std::vector<int>", &ak8jet_partonFlavour, buffersize);
-   if( doWrite("ak8jet_hadronFlavour") ) tree->Branch("ak8jet_hadronFlavour", "std::vector<int>", &ak8jet_hadronFlavour, buffersize);
-   
-   if( doWrite("ak8jet_neutralHadronEnergy") ) tree->Branch("ak8jet_neutralHadronEnergy", "std::vector<float>", &ak8jet_neutralHadronEnergy, buffersize);
-   if( doWrite("ak8jet_neutralEmEnergy") ) tree->Branch("ak8jet_neutralEmEnergy", "std::vector<float>", &ak8jet_neutralEmEnergy, buffersize);
-   if( doWrite("ak8jet_chargedHadronEnergy") ) tree->Branch("ak8jet_chargedHadronEnergy", "std::vector<float>", &ak8jet_chargedHadronEnergy, buffersize);
-   if( doWrite("ak8jet_chargedEmEnergy") ) tree->Branch("ak8jet_chargedEmEnergy", "std::vector<float>", &ak8jet_chargedEmEnergy, buffersize);
-   if( doWrite("ak8jet_electronEnergy") ) tree->Branch("ak8jet_electronEnergy", "std::vector<float>", &ak8jet_electronEnergy, buffersize);
-   if( doWrite("ak8jet_muonEnergy") ) tree->Branch("ak8jet_muonEnergy", "std::vector<float>", &ak8jet_muonEnergy, buffersize);
-   if( doWrite("ak8jet_photonEnergy") ) tree->Branch("ak8jet_photonEnergy", "std::vector<float>", &ak8jet_photonEnergy, buffersize);
-   
-   if( doWrite("ak8jet_chargedMultiplicity") ) tree->Branch("ak8jet_chargedMultiplicity", "std::vector<int>", &ak8jet_chargedMultiplicity, buffersize);
-   if( doWrite("ak8jet_neutralMultiplicity") ) tree->Branch("ak8jet_neutralMultiplicity", "std::vector<int>", &ak8jet_neutralMultiplicity, buffersize);
-   if( doWrite("ak8jet_chargedHadronMultiplicity") ) tree->Branch("ak8jet_chargedHadronMultiplicity", "std::vector<int>", &ak8jet_chargedHadronMultiplicity, buffersize);
-   
-   if( doWrite("ak8jet_jetArea") ) tree->Branch("ak8jet_jetArea", "std::vector<float>", &ak8jet_jetArea, buffersize);
-   
-   if( doWrite("ak8jet_jecFactorUncorrected") ) tree->Branch("ak8jet_jecFactorUncorrected", "std::vector<float>", &ak8jet_jecFactorUncorrected, buffersize);
-   if( doWrite("ak8jet_jecFactorL1FastJet") ) tree->Branch("ak8jet_jecFactorL1FastJet", "std::vector<float>", &ak8jet_jecFactorL1FastJet, buffersize);
-   if( doWrite("ak8jet_jecFactorL2Relative") ) tree->Branch("ak8jet_jecFactorL2Relative", "std::vector<float>", &ak8jet_jecFactorL2Relative, buffersize);
-   if( doWrite("ak8jet_jecFactorL3Absolute") ) tree->Branch("ak8jet_jecFactorL3Absolute", "std::vector<float>", &ak8jet_jecFactorL3Absolute, buffersize);
-   
-   if( doWrite("ak8jet_pileupJetId") ) tree->Branch("ak8jet_pileupJetId", "std::vector<float>", &ak8jet_pileupJetId, buffersize);
-   
-   if( doWrite("ak8jet_looseJetID") ) tree->Branch("ak8jet_looseJetID", "std::vector<bool>", &ak8jet_looseJetID, buffersize);
-   if( doWrite("ak8jet_tightJetID") ) tree->Branch("ak8jet_tightJetID", "std::vector<bool>", &ak8jet_tightJetID, buffersize);
-   
-   if( doWrite("ak8jet_hasGenJet") ) tree->Branch("ak8jet_hasGenJet", "std::vector<bool>", &ak8jet_hasGenJet, buffersize);
-   if( doWrite("ak8jet_genJet_pt") ) tree->Branch("ak8jet_genJet_pt", "std::vector<float>", &ak8jet_genJet_pt, buffersize);
-   if( doWrite("ak8jet_genJet_eta") ) tree->Branch("ak8jet_genJet_eta", "std::vector<float>", &ak8jet_genJet_eta, buffersize);
-   if( doWrite("ak8jet_genJet_phi") ) tree->Branch("ak8jet_genJet_phi", "std::vector<float>", &ak8jet_genJet_phi, buffersize);
-   if( doWrite("ak8jet_genJet_m") ) tree->Branch("ak8jet_genJet_m", "std::vector<float>", &ak8jet_genJet_m, buffersize);
-   if( doWrite("ak8jet_genJet_E") ) tree->Branch("ak8jet_genJet_E", "std::vector<float>", &ak8jet_genJet_E, buffersize);
-   if( doWrite("ak8jet_genJet_status") ) tree->Branch("ak8jet_genJet_status", "std::vector<int>", &ak8jet_genJet_status, buffersize);
-   if( doWrite("ak8jet_genJet_id") ) tree->Branch("ak8jet_genJet_id", "std::vector<int>", &ak8jet_genJet_id, buffersize);
-   
-   if( doWrite("ak8jet_hasGenParton") ) tree->Branch("ak8jet_hasGenParton", "std::vector<bool>", &ak8jet_hasGenParton, buffersize);
-   if( doWrite("ak8jet_genParton_pt") ) tree->Branch("ak8jet_genParton_pt", "std::vector<float>", &ak8jet_genParton_pt, buffersize);
-   if( doWrite("ak8jet_genParton_eta") ) tree->Branch("ak8jet_genParton_eta", "std::vector<float>", &ak8jet_genParton_eta, buffersize);
-   if( doWrite("ak8jet_genParton_phi") ) tree->Branch("ak8jet_genParton_phi", "std::vector<float>", &ak8jet_genParton_phi, buffersize);
-   if( doWrite("ak8jet_genParton_m") ) tree->Branch("ak8jet_genParton_m", "std::vector<float>", &ak8jet_genParton_m, buffersize);
-   if( doWrite("ak8jet_genParton_E") ) tree->Branch("ak8jet_genParton_E", "std::vector<float>", &ak8jet_genParton_E, buffersize);
-   if( doWrite("ak8jet_genParton_status") ) tree->Branch("ak8jet_genParton_status", "std::vector<int>", &ak8jet_genParton_status, buffersize);
-   if( doWrite("ak8jet_genParton_id") ) tree->Branch("ak8jet_genParton_id", "std::vector<int>", &ak8jet_genParton_id, buffersize);
-   
-   if( doWrite("ak8jet_tau1") ) tree->Branch("ak8jet_tau1", "std::vector<float>", &ak8jet_tau1, buffersize);
-   if( doWrite("ak8jet_tau2") ) tree->Branch("ak8jet_tau2", "std::vector<float>", &ak8jet_tau2, buffersize);
-   if( doWrite("ak8jet_tau3") ) tree->Branch("ak8jet_tau3", "std::vector<float>", &ak8jet_tau3, buffersize);
-   if( doWrite("ak8jet_softdrop_mass") ) tree->Branch("ak8jet_softdrop_mass", "std::vector<float>", &ak8jet_softdrop_mass, buffersize);
-   if( doWrite("ak8jet_trimmed_mass") ) tree->Branch("ak8jet_trimmed_mass", "std::vector<float>", &ak8jet_trimmed_mass, buffersize);
-   if( doWrite("ak8jet_pruned_mass") ) tree->Branch("ak8jet_pruned_mass", "std::vector<float>", &ak8jet_pruned_mass, buffersize);
-   if( doWrite("ak8jet_filtered_mass") ) tree->Branch("ak8jet_filtered_mass", "std::vector<float>", &ak8jet_filtered_mass, buffersize);
-   if( doWrite("ak8jet_minMass") ) tree->Branch("ak8jet_minMass", "std::vector<float>", &ak8jet_minMass, buffersize);
-   if( doWrite("ak8jet_topMass") ) tree->Branch("ak8jet_topMass", "std::vector<float>", &ak8jet_topMass, buffersize);
-   if( doWrite("ak8jet_nSubJets") ) tree->Branch("ak8jet_nSubJets", "std::vector<int>", &ak8jet_nSubJets, buffersize);
-   
-   
-   //------------------------
-   //  ak10 collection
-   //------------------------
-
-   if( doWrite("ak10jet_n") ) tree->Branch("ak10jet_n", &ak10jet_n, "ak10jet_n/I", buffersize);
-   if( doWrite("ak10jet_pt") ) tree->Branch("ak10jet_pt", "std::vector<float>", &ak10jet_pt, buffersize);
-   if( doWrite("ak10jet_eta") ) tree->Branch("ak10jet_eta", "std::vector<float>", &ak10jet_eta, buffersize);
-   if( doWrite("ak10jet_phi") ) tree->Branch("ak10jet_phi", "std::vector<float>", &ak10jet_phi, buffersize);
-   if( doWrite("ak10jet_m") ) tree->Branch("ak10jet_m", "std::vector<float>", &ak10jet_m, buffersize);
-   if( doWrite("ak10jet_E") ) tree->Branch("ak10jet_E", "std::vector<float>", &ak10jet_E, buffersize);
-   
-   if( doWrite("ak10jet_ntrk") ) tree->Branch("ak10jet_ntrk", "std::vector<int>", &ak10jet_ntrk, buffersize);
-   
-   if( doWrite("ak10jet_JBP") ) tree->Branch("ak10jet_JBP", "std::vector<float>", &ak10jet_JBP, buffersize);
-   if( doWrite("ak10jet_JP") ) tree->Branch("ak10jet_JP", "std::vector<float>", &ak10jet_JP, buffersize);
-   if( doWrite("ak10jet_TCHP") ) tree->Branch("ak10jet_TCHP", "std::vector<float>", &ak10jet_TCHP, buffersize);
-   if( doWrite("ak10jet_TCHE") ) tree->Branch("ak10jet_TCHE", "std::vector<float>", &ak10jet_TCHE, buffersize);
-   if( doWrite("ak10jet_SSVHE") ) tree->Branch("ak10jet_SSVHE", "std::vector<float>", &ak10jet_SSVHE, buffersize);
-   if( doWrite("ak10jet_SSVHP") ) tree->Branch("ak10jet_SSVHP", "std::vector<float>", &ak10jet_SSVHP, buffersize);
-   if( doWrite("ak10jet_CMVA") ) tree->Branch("ak10jet_CMVA", "std::vector<float>", &ak10jet_CMVA, buffersize);
-   
-   if( doWrite("ak10jet_CSVv2") ) tree->Branch("ak10jet_CSVv2", "std::vector<float>", &ak10jet_CSVv2, buffersize);
-   if( doWrite("ak10jet_partonFlavour") ) tree->Branch("ak10jet_partonFlavour", "std::vector<int>", &ak10jet_partonFlavour, buffersize);
-   if( doWrite("ak10jet_hadronFlavour") ) tree->Branch("ak10jet_hadronFlavour", "std::vector<int>", &ak10jet_hadronFlavour, buffersize);
-   
-   if( doWrite("ak10jet_neutralHadronEnergy") ) tree->Branch("ak10jet_neutralHadronEnergy", "std::vector<float>", &ak10jet_neutralHadronEnergy, buffersize);
-   if( doWrite("ak10jet_neutralEmEnergy") ) tree->Branch("ak10jet_neutralEmEnergy", "std::vector<float>", &ak10jet_neutralEmEnergy, buffersize);
-   if( doWrite("ak10jet_chargedHadronEnergy") ) tree->Branch("ak10jet_chargedHadronEnergy", "std::vector<float>", &ak10jet_chargedHadronEnergy, buffersize);
-   if( doWrite("ak10jet_chargedEmEnergy") ) tree->Branch("ak10jet_chargedEmEnergy", "std::vector<float>", &ak10jet_chargedEmEnergy, buffersize);
-   if( doWrite("ak10jet_electronEnergy") ) tree->Branch("ak10jet_electronEnergy", "std::vector<float>", &ak10jet_electronEnergy, buffersize);
-   if( doWrite("ak10jet_muonEnergy") ) tree->Branch("ak10jet_muonEnergy", "std::vector<float>", &ak10jet_muonEnergy, buffersize);
-   if( doWrite("ak10jet_photonEnergy") ) tree->Branch("ak10jet_photonEnergy", "std::vector<float>", &ak10jet_photonEnergy, buffersize);
-   
-   if( doWrite("ak10jet_chargedMultiplicity") ) tree->Branch("ak10jet_chargedMultiplicity", "std::vector<int>", &ak10jet_chargedMultiplicity, buffersize);
-   if( doWrite("ak10jet_neutralMultiplicity") ) tree->Branch("ak10jet_neutralMultiplicity", "std::vector<int>", &ak10jet_neutralMultiplicity, buffersize);
-   if( doWrite("ak10jet_chargedHadronMultiplicity") ) tree->Branch("ak10jet_chargedHadronMultiplicity", "std::vector<int>", &ak10jet_chargedHadronMultiplicity, buffersize);
-   
-   if( doWrite("ak10jet_jetArea") ) tree->Branch("ak10jet_jetArea", "std::vector<float>", &ak10jet_jetArea, buffersize);
-   
-   if( doWrite("ak10jet_jecFactorUncorrected") ) tree->Branch("ak10jet_jecFactorUncorrected", "std::vector<float>", &ak10jet_jecFactorUncorrected, buffersize);
-   if( doWrite("ak10jet_jecFactorL1FastJet") ) tree->Branch("ak10jet_jecFactorL1FastJet", "std::vector<float>", &ak10jet_jecFactorL1FastJet, buffersize);
-   if( doWrite("ak10jet_jecFactorL2Relative") ) tree->Branch("ak10jet_jecFactorL2Relative", "std::vector<float>", &ak10jet_jecFactorL2Relative, buffersize);
-   if( doWrite("ak10jet_jecFactorL3Absolute") ) tree->Branch("ak10jet_jecFactorL3Absolute", "std::vector<float>", &ak10jet_jecFactorL3Absolute, buffersize);
-   
-   if( doWrite("ak10jet_pileupJetId") ) tree->Branch("ak10jet_pileupJetId", "std::vector<float>", &ak10jet_pileupJetId, buffersize);
-   
-   if( doWrite("ak10jet_looseJetID") ) tree->Branch("ak10jet_looseJetID", "std::vector<bool>", &ak10jet_looseJetID, buffersize);
-   if( doWrite("ak10jet_tightJetID") ) tree->Branch("ak10jet_tightJetID", "std::vector<bool>", &ak10jet_tightJetID, buffersize);
-   
-   if( doWrite("ak10jet_hasGenJet") ) tree->Branch("ak10jet_hasGenJet", "std::vector<bool>", &ak10jet_hasGenJet, buffersize);
-   if( doWrite("ak10jet_genJet_pt") ) tree->Branch("ak10jet_genJet_pt", "std::vector<float>", &ak10jet_genJet_pt, buffersize);
-   if( doWrite("ak10jet_genJet_eta") ) tree->Branch("ak10jet_genJet_eta", "std::vector<float>", &ak10jet_genJet_eta, buffersize);
-   if( doWrite("ak10jet_genJet_phi") ) tree->Branch("ak10jet_genJet_phi", "std::vector<float>", &ak10jet_genJet_phi, buffersize);
-   if( doWrite("ak10jet_genJet_m") ) tree->Branch("ak10jet_genJet_m", "std::vector<float>", &ak10jet_genJet_m, buffersize);
-   if( doWrite("ak10jet_genJet_E") ) tree->Branch("ak10jet_genJet_E", "std::vector<float>", &ak10jet_genJet_E, buffersize);
-   if( doWrite("ak10jet_genJet_status") ) tree->Branch("ak10jet_genJet_status", "std::vector<int>", &ak10jet_genJet_status, buffersize);
-   if( doWrite("ak10jet_genJet_id") ) tree->Branch("ak10jet_genJet_id", "std::vector<int>", &ak10jet_genJet_id, buffersize);
-   
-   if( doWrite("ak10jet_hasGenParton") ) tree->Branch("ak10jet_hasGenParton", "std::vector<bool>", &ak10jet_hasGenParton, buffersize);
-   if( doWrite("ak10jet_genParton_pt") ) tree->Branch("ak10jet_genParton_pt", "std::vector<float>", &ak10jet_genParton_pt, buffersize);
-   if( doWrite("ak10jet_genParton_eta") ) tree->Branch("ak10jet_genParton_eta", "std::vector<float>", &ak10jet_genParton_eta, buffersize);
-   if( doWrite("ak10jet_genParton_phi") ) tree->Branch("ak10jet_genParton_phi", "std::vector<float>", &ak10jet_genParton_phi, buffersize);
-   if( doWrite("ak10jet_genParton_m") ) tree->Branch("ak10jet_genParton_m", "std::vector<float>", &ak10jet_genParton_m, buffersize);
-   if( doWrite("ak10jet_genParton_E") ) tree->Branch("ak10jet_genParton_E", "std::vector<float>", &ak10jet_genParton_E, buffersize);
-   if( doWrite("ak10jet_genParton_status") ) tree->Branch("ak10jet_genParton_status", "std::vector<int>", &ak10jet_genParton_status, buffersize);
-   if( doWrite("ak10jet_genParton_id") ) tree->Branch("ak10jet_genParton_id", "std::vector<int>", &ak10jet_genParton_id, buffersize);
-   
-   if( doWrite("ak10jet_tau1") ) tree->Branch("ak10jet_tau1", "std::vector<float>", &ak10jet_tau1, buffersize);
-   if( doWrite("ak10jet_tau2") ) tree->Branch("ak10jet_tau2", "std::vector<float>", &ak10jet_tau2, buffersize);
-   if( doWrite("ak10jet_tau3") ) tree->Branch("ak10jet_tau3", "std::vector<float>", &ak10jet_tau3, buffersize);
-   if( doWrite("ak10jet_softdrop_mass") ) tree->Branch("ak10jet_softdrop_mass", "std::vector<float>", &ak10jet_softdrop_mass, buffersize);
-   if( doWrite("ak10jet_trimmed_mass") ) tree->Branch("ak10jet_trimmed_mass", "std::vector<float>", &ak10jet_trimmed_mass, buffersize);
-   if( doWrite("ak10jet_pruned_mass") ) tree->Branch("ak10jet_pruned_mass", "std::vector<float>", &ak10jet_pruned_mass, buffersize);
-   if( doWrite("ak10jet_filtered_mass") ) tree->Branch("ak10jet_filtered_mass", "std::vector<float>", &ak10jet_filtered_mass, buffersize);
-   if( doWrite("ak10jet_minMass") ) tree->Branch("ak10jet_minMass", "std::vector<float>", &ak10jet_minMass, buffersize);
-   if( doWrite("ak10jet_topMass") ) tree->Branch("ak10jet_topMass", "std::vector<float>", &ak10jet_topMass, buffersize);
-   if( doWrite("ak10jet_nSubJets") ) tree->Branch("ak10jet_nSubJets", "std::vector<int>", &ak10jet_nSubJets, buffersize);
-   
+   if( doWrite("jet_genParton_id") ) tree->Branch("jet_genParton_id", "std::vector<int>", &jet_genParton_id, buffersize);      
    
    //------------------------
    //  genJet collection
    //------------------------
-
    
    if( doWrite("genJet_n") ) tree->Branch("genJet_n", &genJet_n, "genJet_n/I", buffersize);
    if( doWrite("genJet_pt") ) tree->Branch("genJet_pt", "std::vector<float>", &genJet_pt, buffersize);
@@ -2264,16 +1695,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("genJet_invisibleEnergy") ) tree->Branch("genJet_invisibleEnergy", "std::vector<float>", &genJet_invisibleEnergy, buffersize);
    if( doWrite("genJet_auxiliaryEnergy") ) tree->Branch("genJet_auxiliaryEnergy", "std::vector<float>", &genJet_auxiliaryEnergy, buffersize);
    if( doWrite("genJet_flavour") ) tree->Branch("genJet_flavour", "std::vector<int>", &genJet_flavour, buffersize);
-
-   if( doWrite("pfcand_n") ) tree->Branch("pfcand_n", &pfcand_n, "pfcand_n/I", buffersize);
-   if( doWrite("pfcand_pt") ) tree->Branch("pfcand_pt", "std::vector<float>", &pfcand_pt, buffersize);
-   if( doWrite("pfcand_eta") ) tree->Branch("pfcand_eta", "std::vector<float>", &pfcand_eta, buffersize);
-   if( doWrite("pfcand_phi") ) tree->Branch("pfcand_phi", "std::vector<float>", &pfcand_phi, buffersize);
-   if( doWrite("pfcand_E") ) tree->Branch("pfcand_E", "std::vector<float>", &pfcand_E, buffersize);
-   if( doWrite("pfcand_charge") ) tree->Branch("pfcand_charge", "std::vector<float>", &pfcand_charge, buffersize);
-   if( doWrite("pfcand_id") ) tree->Branch("pfcand_id", "std::vector<int>", &pfcand_id, buffersize);
-   if( doWrite("pfcand_dz") ) tree->Branch("pfcand_dz", "std::vector<float>", &pfcand_dz, buffersize);
-   if( doWrite("pfcand_trackIso") ) tree->Branch("pfcand_trackIso", "std::vector<float>", &pfcand_trackIso, buffersize);
    
    if( doWrite("gen_PVz") ) tree->Branch("gen_PVz", &gen_PVz, "gen_PVz/F", buffersize);
    
@@ -2293,18 +1714,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
 	tree->Branch("gen_daughter_n", "std::vector<int>", &gen_daughter_n, buffersize);
 	tree->Branch("gen_daughter_index", "std::vector<std::vector<int> >", &gen_daughter_index, buffersize);
      }
-     if( doWrite("gen_stop") || doWrite("gen_stop_mass"))
-     {
-	tree->Branch("gen_stop_m", "std::vector<float>", &gen_stop_m, buffersize);
-	tree->Branch("gen_neutralino_m", "std::vector<float>", &gen_neutralino_m, buffersize);
-     }
-
-  tree->Branch("n_presel_jets",     &n_presel_jets,     "n_presel_jets/I",      buffersize);
-  tree->Branch("n_presel_btag",     &n_presel_btag,     "n_presel_btag/I",      buffersize);
-  tree->Branch("n_presel_electrons", &n_presel_electrons, "n_presel_electrons/I",  buffersize);
-  tree->Branch("n_presel_muons",     &n_presel_muons,     "n_presel_muons/I",      buffersize);
-  tree->Branch("n_presel_tau",      &n_presel_tau,      "n_presel_tau/I",       buffersize);
-
 }
 
 bool FlatTree::doWrite(const std::string& name)

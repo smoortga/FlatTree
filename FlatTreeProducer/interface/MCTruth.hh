@@ -37,9 +37,6 @@ class MCTruth
 		float &drMin,
 		float pt, float eta, float phi, int pdgId);
    
-   reco::GenParticle* getUnique(const reco::GenParticle* p,
-				bool verbose);
-   
    void p4toTLV(reco::Particle::LorentzVector vp4,
 		TLorentzVector& tlv);
    

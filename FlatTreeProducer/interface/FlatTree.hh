@@ -7,10 +7,6 @@
 #include <iostream>
 #include <vector>
 
-#include <boost/any.hpp>
-using boost::any_cast;
-typedef std::map<std::string, std::map<std::string, boost::any> >  t_map;
-
 #define DEFVAL -666
 
 #include "FlatTree/FlatTreeProducer/interface/Helper.hh"
@@ -22,26 +18,8 @@ class FlatTree
    FlatTree(TTree* _tree);
    
    TTree* tree;
-
-   //-- Preselection --//
-   int n_presel_jets;
-   int n_presel_btag;
-   int n_presel_electrons;
-   int n_presel_muons;
-   int n_presel_tau;
-
-   int n_presel_jets_min;
-   int n_presel_electrons_min;
-   int n_presel_muons_min;
-   int n_presel_leptons_min;
-   int presel_MET_min;
-   
-   //decide if we skip events according to preselection
-   bool apply_presel;
-   //--------------------- //
    
    std::map<std::string, bool> conf;
-   t_map keep_conf;
 
    void Init();
    void CreateBranches(int buffersize);
@@ -305,9 +283,6 @@ class FlatTree
    std::vector<float> el_ip2dBS;
    std::vector<float> el_ip2dBSErr;
 
-   std::vector<float> el_miniIso;
-   std::vector<float> el_miniIsoTTH;
-
    std::vector<float> el_neutralHadronIso;
    std::vector<float> el_chargedHadronIso;
    std::vector<float> el_puChargedHadronIso;
@@ -440,24 +415,6 @@ class FlatTree
 
    std::vector<bool> el_mediumMVAId;
    std::vector<bool> el_tightMVAId;
-   
-   std::vector<float> el_lepMVA;
-   std::vector<float> el_lepMVA_Moriond16;
-
-   std::vector<float> el_lepMVA_pt; 
-   std::vector<float> el_lepMVA_eta;
-   std::vector<float> el_lepMVA_miniRelIsoCharged;
-   std::vector<float> el_lepMVA_miniRelIsoNeutral;
-   std::vector<float> el_lepMVA_jetPtRatio;
-   std::vector<float> el_lepMVA_jetPtRelv2;
-   std::vector<float> el_lepMVA_jetBTagCSV;
-   std::vector<float> el_lepMVA_sip3d;
-   std::vector<float> el_lepMVA_dxy;
-   std::vector<float> el_lepMVA_dz;
-   std::vector<float> el_lepMVA_mvaId;
-   std::vector<float> el_lepMVA_jetNDauChargedMVASel;
-
-   std::vector<float> el_jetConePt_ttH;
 
    std::vector<int> el_hasMCMatch;
    std::vector<float> el_gen_pt;
@@ -558,9 +515,6 @@ class FlatTree
    std::vector<float> mu_pfSumIso04_sumPhotonEt;
    std::vector<float> mu_pfSumIso04_sumPhotonEtHighThreshold;
    std::vector<float> mu_pfSumIso04_sumPUPt;
-   
-   std::vector<float> mu_miniIso;
-   std::vector<float> mu_miniIsoTTH;
 
    std::vector<int> mu_isGlobalMuon;
    std::vector<int> mu_isTrackerMuon;
@@ -765,24 +719,6 @@ class FlatTree
    std::vector<float> mu_innerTrack_validFraction;
    
    std::vector<int> mu_type;
-   
-   std::vector<float> mu_lepMVA;
-   std::vector<float> mu_lepMVA_Moriond16;
-
-   std::vector<float> mu_lepMVA_pt; 
-   std::vector<float> mu_lepMVA_eta;
-   std::vector<float> mu_lepMVA_miniRelIsoCharged;
-   std::vector<float> mu_lepMVA_miniRelIsoNeutral;
-   std::vector<float> mu_lepMVA_jetPtRatio;
-   std::vector<float> mu_lepMVA_jetPtRelv2;
-   std::vector<float> mu_lepMVA_jetBTagCSV;
-   std::vector<float> mu_lepMVA_sip3d;
-   std::vector<float> mu_lepMVA_dxy;
-   std::vector<float> mu_lepMVA_dz;
-   std::vector<float> mu_lepMVA_mvaId;
-   std::vector<float> mu_lepMVA_jetNDauChargedMVASel;
-
-   std::vector<float> mu_jetConePt_ttH;
 
    std::vector<int> mu_hasMCMatch;
    std::vector<float> mu_gen_pt;
@@ -832,13 +768,7 @@ class FlatTree
    std::vector<float> tau_byLooseCombinedIsolationDeltaBetaCorr3Hits;
    std::vector<float> tau_byMediumCombinedIsolationDeltaBetaCorr3Hits;
    std::vector<float> tau_byTightCombinedIsolationDeltaBetaCorr3Hits;
-//   std::vector<float> tau_byLooseIsolationMVA3newDMwLT;
-//   std::vector<float> tau_byMediumIsolationMVA3newDMwLT;
-//   std::vector<float> tau_byTightIsolationMVA3newDMwLT;
 
-//   std::vector<float> tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03;
-//   std::vector<float> tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03;
-//   std::vector<float> tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03;
    std::vector<float> tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT;
    std::vector<float> tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT;
    std::vector<float> tau_byTightIsolationMVArun2v1DBdR03oldDMwLT;
@@ -846,10 +776,6 @@ class FlatTree
    
    std::vector<float> tau_againstMuonLoose3;
    std::vector<float> tau_againstMuonTight3;
-
-//   std::vector<float> tau_againstElectronVLooseMVA5;
-//   std::vector<float> tau_againstElectronLooseMVA5;
-//   std::vector<float> tau_againstElectronMediumMVA5;
    
    std::vector<float> tau_pfEssential_jet_pt;
    std::vector<float> tau_pfEssential_jet_eta;
@@ -927,7 +853,6 @@ class FlatTree
    
    std::vector<bool> jet_looseJetID;
    std::vector<bool> jet_tightJetID;
-   std::vector<float> jet_qgtag;
 
    std::vector<bool> jet_hasGenJet;   
    std::vector<float> jet_genJet_pt;
@@ -946,217 +871,7 @@ class FlatTree
    std::vector<float> jet_genParton_E;
    std::vector<int> jet_genParton_status;
    std::vector<int> jet_genParton_id;
-   
-   // Puppi Jets
-
-   int jetPuppi_n;
-   std::vector<float> jetPuppi_pt;
-   std::vector<float> jetPuppi_eta;
-   std::vector<float> jetPuppi_phi;
-   std::vector<float> jetPuppi_m;
-   std::vector<float> jetPuppi_E;
-
-   std::vector<int> jetPuppi_ntrk;
-
-   std::vector<float> jetPuppi_JBP;
-   std::vector<float> jetPuppi_JP;
-   std::vector<float> jetPuppi_TCHP;
-   std::vector<float> jetPuppi_TCHE;
-   std::vector<float> jetPuppi_SSVHE;
-   std::vector<float> jetPuppi_SSVHP;
-   std::vector<float> jetPuppi_CMVA;
-   std::vector<float> jetPuppi_CSVv2;
-   std::vector<int> jetPuppi_partonFlavour;
-   std::vector<int> jetPuppi_hadronFlavour;
-
-   std::vector<float> jetPuppi_neutralHadronEnergy;
-   std::vector<float> jetPuppi_neutralEmEnergy;
-   std::vector<float> jetPuppi_chargedHadronEnergy;
-   std::vector<float> jetPuppi_chargedEmEnergy;
-   std::vector<float> jetPuppi_electronEnergy;
-   std::vector<float> jetPuppi_muonEnergy;
-   std::vector<float> jetPuppi_photonEnergy;
-
-   std::vector<int> jetPuppi_chargedMultiplicity;
-   std::vector<int> jetPuppi_neutralMultiplicity;
-   std::vector<int> jetPuppi_chargedHadronMultiplicity;
-   
-   std::vector<float> jetPuppi_jecFactorUncorrected;
-   std::vector<float> jetPuppi_jecFactorL1FastJet;
-   std::vector<float> jetPuppi_jecFactorL2Relative;
-   std::vector<float> jetPuppi_jecFactorL3Absolute;
-   
-   std::vector<float> jetPuppi_pileupJetId;
-
-   std::vector<bool> jetPuppi_hasGenJet;   
-   std::vector<float> jetPuppi_genJet_pt;
-   std::vector<float> jetPuppi_genJet_eta;
-   std::vector<float> jetPuppi_genJet_phi;
-   std::vector<float> jetPuppi_genJet_m;
-   std::vector<float> jetPuppi_genJet_E;
-   std::vector<int> jetPuppi_genJet_status;
-   std::vector<int> jetPuppi_genJet_id;
-
-   std::vector<bool> jetPuppi_hasGenParton;   
-   std::vector<float> jetPuppi_genParton_pt;
-   std::vector<float> jetPuppi_genParton_eta;
-   std::vector<float> jetPuppi_genParton_phi;
-   std::vector<float> jetPuppi_genParton_m;
-   std::vector<float> jetPuppi_genParton_E;
-   std::vector<int> jetPuppi_genParton_status;
-   std::vector<int> jetPuppi_genParton_id;
-
-   // ak8 Jets (w-tagging/top-tagging)
-   
-   int ak8jet_n;
-   std::vector<float> ak8jet_pt;
-   std::vector<float> ak8jet_eta;
-   std::vector<float> ak8jet_phi;
-   std::vector<float> ak8jet_m;
-   std::vector<float> ak8jet_E;
-   
-   std::vector<int> ak8jet_ntrk;
-   
-   std::vector<float> ak8jet_JBP;
-   std::vector<float> ak8jet_JP;
-   std::vector<float> ak8jet_TCHP;
-   std::vector<float> ak8jet_TCHE;
-   std::vector<float> ak8jet_SSVHE;
-   std::vector<float> ak8jet_SSVHP;
-   std::vector<float> ak8jet_CMVA;
-   
-   std::vector<float> ak8jet_CSVv2;
-   std::vector<int> ak8jet_partonFlavour;
-   std::vector<int> ak8jet_hadronFlavour;
-   
-   std::vector<float> ak8jet_neutralHadronEnergy;
-   std::vector<float> ak8jet_neutralEmEnergy;
-   std::vector<float> ak8jet_chargedHadronEnergy;
-   std::vector<float> ak8jet_chargedEmEnergy;
-   std::vector<float> ak8jet_electronEnergy;
-   std::vector<float> ak8jet_muonEnergy;
-   std::vector<float> ak8jet_photonEnergy;
-   
-   std::vector<int> ak8jet_chargedMultiplicity;
-   std::vector<int> ak8jet_neutralMultiplicity;
-   std::vector<int> ak8jet_chargedHadronMultiplicity;
-   
-   std::vector<float> ak8jet_jecFactorUncorrected;
-   std::vector<float> ak8jet_jecFactorL1FastJet;
-   std::vector<float> ak8jet_jecFactorL2Relative;
-   std::vector<float> ak8jet_jecFactorL3Absolute;
-   
-   std::vector<float> ak8jet_jetArea;
-   
-   std::vector<float> ak8jet_pileupJetId;
-   std::vector<bool> ak8jet_looseJetID;
-   std::vector<bool> ak8jet_tightJetID;
       
-   std::vector<bool> ak8jet_hasGenJet;
-   std::vector<float> ak8jet_genJet_pt;
-   std::vector<float> ak8jet_genJet_eta;
-   std::vector<float> ak8jet_genJet_phi;
-   std::vector<float> ak8jet_genJet_m;
-   std::vector<float> ak8jet_genJet_E;
-   std::vector<int> ak8jet_genJet_status;
-   std::vector<int> ak8jet_genJet_id;
-   
-   std::vector<bool> ak8jet_hasGenParton;
-   std::vector<float> ak8jet_genParton_pt;
-   std::vector<float> ak8jet_genParton_eta;
-   std::vector<float> ak8jet_genParton_phi;
-   std::vector<float> ak8jet_genParton_m;
-   std::vector<float> ak8jet_genParton_E;
-   std::vector<int> ak8jet_genParton_status;
-   std::vector<int> ak8jet_genParton_id;
-      
-   std::vector<float> ak8jet_tau1;
-   std::vector<float> ak8jet_tau2;
-   std::vector<float> ak8jet_tau3;
-   std::vector<float> ak8jet_softdrop_mass;
-   std::vector<float> ak8jet_trimmed_mass;
-   std::vector<float> ak8jet_pruned_mass;
-   std::vector<float> ak8jet_filtered_mass;
-   std::vector<float> ak8jet_minMass;
-   std::vector<float> ak8jet_topMass;
-   std::vector<int> ak8jet_nSubJets;
-   
-   
-   // ak10 Jets (w-tagging/top-tagging)
-   
-   int ak10jet_n;
-   std::vector<float> ak10jet_pt;
-   std::vector<float> ak10jet_eta;
-   std::vector<float> ak10jet_phi;
-   std::vector<float> ak10jet_m;
-   std::vector<float> ak10jet_E;
-   
-   std::vector<int> ak10jet_ntrk;
-   
-   std::vector<float> ak10jet_JBP;
-   std::vector<float> ak10jet_JP;
-   std::vector<float> ak10jet_TCHP;
-   std::vector<float> ak10jet_TCHE;
-   std::vector<float> ak10jet_SSVHE;
-   std::vector<float> ak10jet_SSVHP;
-   std::vector<float> ak10jet_CMVA;
-   
-   std::vector<float> ak10jet_CSVv2;
-   std::vector<int> ak10jet_partonFlavour;
-   std::vector<int> ak10jet_hadronFlavour;
-   
-   std::vector<float> ak10jet_neutralHadronEnergy;
-   std::vector<float> ak10jet_neutralEmEnergy;
-   std::vector<float> ak10jet_chargedHadronEnergy;
-   std::vector<float> ak10jet_chargedEmEnergy;
-   std::vector<float> ak10jet_electronEnergy;
-   std::vector<float> ak10jet_muonEnergy;
-   std::vector<float> ak10jet_photonEnergy;
-   
-   std::vector<int> ak10jet_chargedMultiplicity;
-   std::vector<int> ak10jet_neutralMultiplicity;
-   std::vector<int> ak10jet_chargedHadronMultiplicity;
-   
-   std::vector<float> ak10jet_jecFactorUncorrected;
-   std::vector<float> ak10jet_jecFactorL1FastJet;
-   std::vector<float> ak10jet_jecFactorL2Relative;
-   std::vector<float> ak10jet_jecFactorL3Absolute;
-   
-   std::vector<float> ak10jet_jetArea;
-   
-   std::vector<float> ak10jet_pileupJetId;
-   std::vector<bool> ak10jet_looseJetID;
-   std::vector<bool> ak10jet_tightJetID;
-      
-   std::vector<bool> ak10jet_hasGenJet;
-   std::vector<float> ak10jet_genJet_pt;
-   std::vector<float> ak10jet_genJet_eta;
-   std::vector<float> ak10jet_genJet_phi;
-   std::vector<float> ak10jet_genJet_m;
-   std::vector<float> ak10jet_genJet_E;
-   std::vector<int> ak10jet_genJet_status;
-   std::vector<int> ak10jet_genJet_id;
-   
-   std::vector<bool> ak10jet_hasGenParton;
-   std::vector<float> ak10jet_genParton_pt;
-   std::vector<float> ak10jet_genParton_eta;
-   std::vector<float> ak10jet_genParton_phi;
-   std::vector<float> ak10jet_genParton_m;
-   std::vector<float> ak10jet_genParton_E;
-   std::vector<int> ak10jet_genParton_status;
-   std::vector<int> ak10jet_genParton_id;
-      
-   std::vector<float> ak10jet_tau1;
-   std::vector<float> ak10jet_tau2;
-   std::vector<float> ak10jet_tau3;
-   std::vector<float> ak10jet_softdrop_mass;
-   std::vector<float> ak10jet_trimmed_mass;
-   std::vector<float> ak10jet_pruned_mass;
-   std::vector<float> ak10jet_filtered_mass;
-   std::vector<float> ak10jet_minMass;
-   std::vector<float> ak10jet_topMass;
-   std::vector<int> ak10jet_nSubJets;
-   
    // GenJets
 
    int genJet_n;
@@ -1170,18 +885,6 @@ class FlatTree
    std::vector<float> genJet_invisibleEnergy;
    std::vector<float> genJet_auxiliaryEnergy;
    std::vector<int>   genJet_flavour;
-   
-   // PFcands
-   
-   int pfcand_n;
-   std::vector<float> pfcand_pt;
-   std::vector<float> pfcand_eta;
-   std::vector<float> pfcand_phi;
-   std::vector<float> pfcand_E;
-   std::vector<float> pfcand_charge;
-   std::vector<int> pfcand_id;
-   std::vector<float> pfcand_dz;
-   std::vector<float> pfcand_trackIso;
    
    // gen
    float gen_PVz;
