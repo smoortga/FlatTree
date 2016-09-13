@@ -16,9 +16,9 @@ class FlatTree
  public:
 
    FlatTree(TTree* _tree);
-   
+
    TTree* tree;
-   
+
    std::map<std::string, bool> conf;
 
    void Init();
@@ -41,22 +41,22 @@ class FlatTree
    float metGen_pt;
    float metGen_phi;
    float metGen_sumet;
-   
+
    float metGen_NeutralEMEt;
    float metGen_ChargedEMEt;
    float metGen_NeutralHadEt;
    float metGen_ChargedHadEt;
    float metGen_MuonEt;
    float metGen_InvisibleEt;
-   
+
    float met_uncorrectedPt;
    float met_uncorrectedPhi;
    float met_uncorrectedSumEt;
-   
+
    float met_caloMETPt;
    float met_caloMETPhi;
    float met_caloMETSumEt;
-   
+
    float met_shiftedPx_JetEnUp;
    float met_shiftedPx_JetEnDown;
    float met_shiftedPx_JetResUp;
@@ -88,7 +88,7 @@ class FlatTree
    float met_shiftedPy_NoShift;
    float met_shiftedPy_PhotonEnUp;
    float met_shiftedPy_PhotonEnDown;
-   
+
    float met_shiftedPhi_JetEnUp;
    float met_shiftedPhi_JetEnDown;
    float met_shiftedPhi_JetResUp;
@@ -104,7 +104,7 @@ class FlatTree
    float met_shiftedPhi_NoShift;
    float met_shiftedPhi_PhotonEnUp;
    float met_shiftedPhi_PhotonEnDown;
-   
+
    float met_shiftedSumEt_JetEnUp;
    float met_shiftedSumEt_JetEnDown;
    float met_shiftedSumEt_JetResUp;
@@ -120,17 +120,13 @@ class FlatTree
    float met_shiftedSumEt_NoShift;
    float met_shiftedSumEt_PhotonEnUp;
    float met_shiftedSumEt_PhotonEnDown;
-  
+
    float metNoHF_pt;
    float metNoHF_phi;
    float metNoHF_sumet;
 
-   float metPuppi_pt;
-   float metPuppi_phi;
-   float metPuppi_sumet;
-
    int   pv_n;
-   
+
    float pv_x;
    float pv_y;
    float pv_z;
@@ -138,14 +134,14 @@ class FlatTree
    float pv_xError;
    float pv_yError;
    float pv_zError;
-   
+
    float pv_chi2;
    int   pv_ndof;
    float pv_rho;
    int   pv_isFake;
-   
+
    double met_sig;
-   
+
    double met_cov00;
    double met_cov10;
    double met_cov01;
@@ -165,10 +161,10 @@ class FlatTree
    float weight_scale_muF2;
    float weight_scale_muR0p5;
    float weight_scale_muR2;
-   
+
    std::vector<float> mc_pdfweights;
    std::vector<std::string> mc_pdfweightIds;
-   
+
    int mc_pu_intime_NumInt;
    int mc_pu_trueNumInt;
    int mc_pu_before_npu;
@@ -184,7 +180,7 @@ class FlatTree
    std::vector<std::vector<int> > mc_pu_ntrks_highpT;
 
    // Trigger
-   
+   //
    int                       trigger_n;
    std::vector<int>          trigger;
    std::vector<std::string>  trigger_name;
@@ -255,7 +251,7 @@ class FlatTree
    int nvertex;
 
    // Electrons
-
+   //
    int el_n;
    std::vector<float> el_pt;
    std::vector<float> el_eta;
@@ -268,12 +264,12 @@ class FlatTree
    std::vector<int> el_passConversionVeto;
    std::vector<int> el_isGsfCtfScPixChargeConsistent;
    std::vector<int> el_isGsfScPixChargeConsistent;
-   
+
    std::vector<float> el_ecalEnergy;
    std::vector<float> el_correctedEcalEnergy;
    std::vector<float> el_correctedEcalEnergyError;
    std::vector<float> el_trackMomentumError;
-   
+
    std::vector<float> el_ip3d;
    std::vector<float> el_ip3dErr;
    std::vector<float> el_ip2d;
@@ -291,7 +287,7 @@ class FlatTree
    std::vector<float> el_particleIso;
    std::vector<float> el_photonIso;
    std::vector<float> el_trackIso;
-   
+
    std::vector<float> el_ecalPFClusterIso;
    std::vector<float> el_hcalPFClusterIso;
 
@@ -321,7 +317,7 @@ class FlatTree
    std::vector<float> el_eEleClusterOverPout;
    std::vector<float> el_deltaEtaEleClusterTrackAtCalo;
    std::vector<float> el_deltaPhiEleClusterTrackAtCalo;
-   
+
    std::vector<float> el_vx;
    std::vector<float> el_vy;
    std::vector<float> el_vz;
@@ -351,7 +347,7 @@ class FlatTree
    std::vector<int> el_pixelLayersWithMeasurement;
    std::vector<int> el_numberOfValidStripLayersWithMonoAndStereo;
    std::vector<int> el_trackerLayersWithoutMeasurement;
-   
+
    std::vector<float> el_superCluster_eta;
    std::vector<float> el_superCluster_phi;
    std::vector<float> el_superCluster_energy;
@@ -362,7 +358,7 @@ class FlatTree
    std::vector<float> el_superCluster_preshowerEnergyPlane1;
    std::vector<float> el_superCluster_preshowerEnergyPlane2;
    std::vector<float> el_superCluster_positionR;
-   
+
    std::vector<int> el_basicClustersSize;
    std::vector<float> el_e1x5;
    std::vector<float> el_e5x5;
@@ -379,7 +375,7 @@ class FlatTree
    std::vector<float> el_full5x5_e1x5;
    std::vector<float> el_full5x5_e5x5;
    std::vector<float> el_full5x5_e2x5Max;
-   
+
    std::vector<float> el_hadronicOverEm;
    std::vector<int> el_numberOfLostHits;
    std::vector<int> el_numberOfLostHitsDefault;
@@ -403,15 +399,12 @@ class FlatTree
 
    std::vector<float> el_mvaNonTrigV0;
    std::vector<float> el_mvaNonTrigCat;
-   
+
    std::vector<bool> el_vetoCBId;
    std::vector<bool> el_looseCBId;
    std::vector<bool> el_mediumCBId;
    std::vector<bool> el_tightCBId;
    std::vector<bool> el_heepCBId;
-
-   std::vector<bool> el_vetoStopID;
-   std::vector<bool> el_mediumStopID;
 
    std::vector<bool> el_mediumMVAId;
    std::vector<bool> el_tightMVAId;
@@ -436,12 +429,12 @@ class FlatTree
    std::vector<int> el_genPAT_status;
    std::vector<int> el_genPAT_id;
    std::vector<int> el_genPAT_charge;
-   
+
    std::vector<bool> el_hasMatchedConversion;
    std::vector<int> el_expectedMissingInnerHits;
 
    // Muons
-
+   //
    int mu_n;
    std::vector<float> mu_pt;
    std::vector<float> mu_eta;
@@ -459,7 +452,7 @@ class FlatTree
    std::vector<float> mu_ip3dBSErr;
    std::vector<float> mu_ip2dBS;
    std::vector<float> mu_ip2dBSErr;
-   
+
    std::vector<float> mu_neutralHadronIso;
    std::vector<float> mu_chargedHadronIso;
    std::vector<float> mu_puChargedHadronIso;
@@ -529,10 +522,10 @@ class FlatTree
 
    std::vector<int> mu_numberOfMatches;
    std::vector<int> mu_numberOfMatchedStations;
-   
+
    std::vector<float> mu_combinedQuality_chi2LocalPosition;
    std::vector<float> mu_combinedQuality_trkKink;
-   
+
    std::vector<float> mu_segmentCompatibility;
    std::vector<float> mu_caloCompatibility;
 
@@ -579,7 +572,7 @@ class FlatTree
    std::vector<float> mu_calEnergy_hcal_time;
    std::vector<int> mu_calEnergy_ecal_rawId;
    std::vector<int> mu_calEnergy_hcal_rawId;
-   
+
    std::vector<float> mu_isolationR03_trackerVetoPt;
    std::vector<float> mu_isolationR03_emVetoEt;
    std::vector<float> mu_isolationR03_hadVetoEt;
@@ -590,7 +583,7 @@ class FlatTree
    std::vector<float> mu_isolationR03_hoEt;
    std::vector<int> mu_isolationR03_nTracks;
    std::vector<int> mu_isolationR03_nJets;
-   
+
    std::vector<float> mu_isolationR05_trackerVetoPt;
    std::vector<float> mu_isolationR05_emVetoEt;
    std::vector<float> mu_isolationR05_hadVetoEt;
@@ -640,7 +633,7 @@ class FlatTree
    std::vector<int> mu_globalTrack_numberOfInnerHits;
    std::vector<int> mu_globalTrack_numberOfOuterHits;
    std::vector<float> mu_globalTrack_validFraction;
-   
+
    std::vector<int> mu_bestTrackType;
    std::vector<int> mu_hasBestTrack;
    std::vector<float> mu_bestTrack_d0;
@@ -717,7 +710,7 @@ class FlatTree
    std::vector<int> mu_innerTrack_numberOfInnerHits;
    std::vector<int> mu_innerTrack_numberOfOuterHits;
    std::vector<float> mu_innerTrack_validFraction;
-   
+
    std::vector<int> mu_type;
 
    std::vector<int> mu_hasMCMatch;
@@ -738,9 +731,9 @@ class FlatTree
    std::vector<int> mu_genPAT_status;
    std::vector<int> mu_genPAT_id;
    std::vector<int> mu_genPAT_charge;
-   
+
    // Taus
-   
+   //
    int tau_n;
    std::vector<float> tau_pt;
    std::vector<float> tau_eta;
@@ -749,22 +742,22 @@ class FlatTree
    std::vector<float> tau_E;
    std::vector<int> tau_id;
    std::vector<int> tau_charge;
-   
+
    std::vector<bool> tau_hasLeadChargedHadrCand;
    std::vector<float> tau_leadingTrackPt;
    std::vector<int> tau_leadingTrackCharge;
    std::vector<float> tau_leadingTrackDz;
    std::vector<float> tau_leadingTrackDxy;
-   
+
    std::vector<int> tau_decayMode;
    std::vector<float> tau_decayModeFindingOldDMs;
    std::vector<float> tau_decayModeFindingNewDMs;
-   
+
    std::vector<float> tau_puCorrPtSum;
    std::vector<float> tau_neutralIsoPtSum;
    std::vector<float> tau_chargedIsoPtSum;
    std::vector<float> tau_byCombinedIsolationDeltaBetaCorrRaw3Hits;
-   
+
    std::vector<float> tau_byLooseCombinedIsolationDeltaBetaCorr3Hits;
    std::vector<float> tau_byMediumCombinedIsolationDeltaBetaCorr3Hits;
    std::vector<float> tau_byTightCombinedIsolationDeltaBetaCorr3Hits;
@@ -773,10 +766,10 @@ class FlatTree
    std::vector<float> tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT;
    std::vector<float> tau_byTightIsolationMVArun2v1DBdR03oldDMwLT;
    std::vector<float> tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT;
-   
+
    std::vector<float> tau_againstMuonLoose3;
    std::vector<float> tau_againstMuonTight3;
-   
+
    std::vector<float> tau_pfEssential_jet_pt;
    std::vector<float> tau_pfEssential_jet_eta;
    std::vector<float> tau_pfEssential_jet_phi;
@@ -786,19 +779,19 @@ class FlatTree
    std::vector<float> tau_pfEssential_jetCorr_eta;
    std::vector<float> tau_pfEssential_jetCorr_phi;
    std::vector<float> tau_pfEssential_jetCorr_m;
-   
+
    std::vector<bool> tau_pfEssential_hasSV;
    std::vector<float> tau_pfEssential_sv_x;
    std::vector<float> tau_pfEssential_sv_y;
    std::vector<float> tau_pfEssential_sv_z;
-   
+
    std::vector<float> tau_pfEssential_flightLengthSig;
    std::vector<float> tau_pfEssential_dxy;
    std::vector<float> tau_pfEssential_dxy_error;
    std::vector<float> tau_pfEssential_dxy_Sig;
-   
-   // Jets
 
+   // Jets
+   //
    int jet_n;
    std::vector<float> jet_pt;
    std::vector<float> jet_eta;
@@ -833,9 +826,9 @@ class FlatTree
    std::vector<int> jet_chargedMultiplicity;
    std::vector<int> jet_neutralMultiplicity;
    std::vector<int> jet_chargedHadronMultiplicity;
-   
+
    std::vector<float> jet_jetArea;
-   
+
    std::vector<float> jet_jecFactorUncorrected;
    std::vector<float> jet_jecFactorL1FastJet;
    std::vector<float> jet_jecFactorL2Relative;
@@ -846,15 +839,15 @@ class FlatTree
    std::vector<float> jet_chargedHadronEnergyFraction;
    std::vector<float> jet_muonEnergyFraction;
    std::vector<float> jet_chargedEmEnergyFraction;
-   
+
    std::vector<float> jet_Unc;
-   
+
    std::vector<float> jet_pileupJetId;
-   
+
    std::vector<bool> jet_looseJetID;
    std::vector<bool> jet_tightJetID;
 
-   std::vector<bool> jet_hasGenJet;   
+   std::vector<bool> jet_hasGenJet;
    std::vector<float> jet_genJet_pt;
    std::vector<float> jet_genJet_eta;
    std::vector<float> jet_genJet_phi;
@@ -871,9 +864,9 @@ class FlatTree
    std::vector<float> jet_genParton_E;
    std::vector<int> jet_genParton_status;
    std::vector<int> jet_genParton_id;
-      
-   // GenJets
 
+   // GenJets
+   //
    int genJet_n;
    std::vector<float> genJet_pt;
    std::vector<float> genJet_eta;
@@ -885,7 +878,7 @@ class FlatTree
    std::vector<float> genJet_invisibleEnergy;
    std::vector<float> genJet_auxiliaryEnergy;
    std::vector<int>   genJet_flavour;
-   
+
    // gen
    float gen_PVz;
    int gen_n;
@@ -901,8 +894,6 @@ class FlatTree
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
    std::vector<std::vector<int> > gen_daughter_index;
-   std::vector<float> gen_stop_m;
-   std::vector<float> gen_neutralino_m;
 };
 
 #endif

@@ -93,9 +93,6 @@
     <var name="metNoHF_pt" save="1"></var>
     <var name="metNoHF_phi" save="1"></var>
     <var name="metNoHF_sumet" save="1"></var>
-    <var name="metPuppi_pt" save="1"></var>
-    <var name="metPuppi_phi" save="1"></var>
-    <var name="metPuppi_sumet" save="1"></var>
     <var name="nvertex" save="1"></var>
     <var name="pv_x" save="1"></var>
     <var name="pv_y" save="1"></var>
@@ -323,8 +320,6 @@
     <var name="el_heepCBId" save="1"></var>
     <var name="el_mediumMVAId" save="1"></var>
     <var name="el_tightMVAId" save="1"></var>
-    <var name="el_mediumStopID" save="1"></var>
-    <var name="el_vetoStopID" save="1"></var>
     <var name="el_hasMatchedConversion" save="1"></var>
     <var name="el_expectedMissingInnerHits" save="1"></var>
     <var name="el_hasMCMatch" save="1" mc="1"></var>
