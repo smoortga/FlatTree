@@ -25,4 +25,4 @@ config.Data.outLFNDirBase = 'OUTLFN'
 config.Data.lumiMask = 'GRL/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt'
 config.section_('User')
 config.section_('Site')
-config.Site.storageSite = 'T2_FR_IPHC'
+config.Site.storageSite = 'T2_BE_IIHE'
