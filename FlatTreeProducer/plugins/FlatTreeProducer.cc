@@ -487,12 +487,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        !isData_ )
      {
         mc_truth->Init(*ftree);
+	mc_truth->fillGenPV(iEvent,iSetup,*ftree,genParticlesHandle);
         mc_truth->fillGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
-     }
-   if( !isData_ )
-     {
-        mc_truth->Init(*ftree);
-        mc_truth->fillGenPV(iEvent,iSetup,*ftree,genParticlesHandle);
      }
    
    bool passMETFilters = 1;
