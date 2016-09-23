@@ -789,6 +789,7 @@ void FlatTree::Init()
    jet_muonEnergy.clear();
    jet_photonEnergy.clear();
 
+   jet_charge.clear();
    jet_chargedMultiplicity.clear();
    jet_neutralMultiplicity.clear();
    jet_chargedHadronMultiplicity.clear();
@@ -1626,6 +1627,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_muonEnergy") ) tree->Branch("jet_muonEnergy", "std::vector<float>", &jet_muonEnergy, buffersize);
    if( doWrite("jet_photonEnergy") ) tree->Branch("jet_photonEnergy", "std::vector<float>", &jet_photonEnergy, buffersize);
 
+   if( doWrite("jet_charge") ) tree->Branch("jet_charge", "std::vector<int>", &jet_charge, buffersize);
    if( doWrite("jet_chargedMultiplicity") ) tree->Branch("jet_chargedMultiplicity", "std::vector<int>", &jet_chargedMultiplicity, buffersize);
    if( doWrite("jet_neutralMultiplicity") ) tree->Branch("jet_neutralMultiplicity", "std::vector<int>", &jet_neutralMultiplicity, buffersize);
    if( doWrite("jet_chargedHadronMultiplicity") ) tree->Branch("jet_chargedHadronMultiplicity", "std::vector<int>", &jet_chargedHadronMultiplicity, buffersize);

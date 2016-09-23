@@ -1630,6 +1630,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_SSVHP.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
         ftree->jet_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
 
+	ftree->jet_charge.push_back(jet.charge());
         ftree->jet_chargedMultiplicity.push_back(jet.chargedMultiplicity());
         ftree->jet_neutralMultiplicity.push_back(jet.neutralMultiplicity());
         ftree->jet_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());

@@ -823,6 +823,7 @@ class FlatTree
    std::vector<float> jet_muonEnergy;
    std::vector<float> jet_photonEnergy;
 
+   std::vector<int> jet_charge;
    std::vector<int> jet_chargedMultiplicity;
    std::vector<int> jet_neutralMultiplicity;
    std::vector<int> jet_chargedHadronMultiplicity;

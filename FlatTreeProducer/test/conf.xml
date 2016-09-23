@@ -687,6 +687,7 @@
     <var name="jet_muonEnergy" save="1"></var>
     <var name="jet_photonEnergy" save="1"></var>
     <var name="jet_jetArea" save="1"></var>
+    <var name="jet_charge" save="1"></var>
     <var name="jet_chargedMultiplicity" save="1"></var>
     <var name="jet_neutralMultiplicity" save="1"></var>
     <var name="jet_chargedHadronMultiplicity" save="0"></var>
