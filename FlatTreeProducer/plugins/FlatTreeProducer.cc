@@ -44,6 +44,7 @@
 
 #include "FlatTree/FlatTreeProducer/interface/FlatTree.hh"
 #include "FlatTree/FlatTreeProducer/interface/MCTruth.hh"
+#include "FlatTree/FlatTreeProducer/interface/GenTTXCategorizer.hh"
 
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 
@@ -143,6 +144,22 @@ class FlatTreeProducer : public edm::EDAnalyzer
    std::vector<std::string> filterTriggerNames_;
 
    JetCorrectionUncertainty *jecUnc;
+   
+   edm::EDGetTokenT<reco::GenJetCollection> genTTXJetsToken_;
+   
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadJetIndexToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadFlavourToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadFromTopWeakDecayToken_;
+   edm::EDGetTokenT<std::vector<reco::GenParticle> > genTTXBHadPlusMothersToken_;
+   edm::EDGetTokenT<std::vector<std::vector<int> > > genTTXBHadPlusMothersIndicesToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadIndexToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadLeptonHadronIndexToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXBHadLeptonViaTauToken_;
+   
+   edm::EDGetTokenT<std::vector<int> > genTTXCHadJetIndexToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXCHadFlavourToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXCHadFromTopWeakDecayToken_;
+   edm::EDGetTokenT<std::vector<int> > genTTXCHadBHadronIdToken_;
 };
 
 FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
@@ -209,6 +226,20 @@ hltPrescale_(iConfig,consumesCollector(),*this)
    metSigToken_            = consumes<double>(iConfig.getParameter<edm::InputTag>("metSigInput"));
    metCovToken_            = consumes<math::Error<2>::type>(iConfig.getParameter<edm::InputTag>("metCovInput"));
 
+   genTTXJetsToken_                    = consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("genTTXJets"));
+   genTTXBHadJetIndexToken_            = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadJetIndex"));
+   genTTXBHadFlavourToken_             = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadFlavour"));
+   genTTXBHadFromTopWeakDecayToken_    = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadFromTopWeakDecay"));
+   genTTXBHadPlusMothersToken_         = consumes<std::vector<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("genTTXBHadPlusMothers"));
+   genTTXBHadPlusMothersIndicesToken_  = consumes<std::vector<std::vector<int> > >(iConfig.getParameter<edm::InputTag>("genTTXBHadPlusMothersIndices"));
+   genTTXBHadIndexToken_               = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadIndex"));
+   genTTXBHadLeptonHadronIndexToken_   = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadLeptonHadronIndex"));
+   genTTXBHadLeptonViaTauToken_        = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXBHadLeptonViaTau"));
+   genTTXCHadJetIndexToken_            = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXCHadJetIndex"));
+   genTTXCHadFlavourToken_             = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXCHadFlavour"));
+   genTTXCHadFromTopWeakDecayToken_    = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXCHadFromTopWeakDecay"));
+   genTTXCHadBHadronIdToken_           = consumes<std::vector<int> >(iConfig.getParameter<edm::InputTag>("genTTXCHadBHadronId"));
+   
    // #########################
    // #  Read XML config file #
    // #########################
@@ -390,6 +421,46 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
    edm::Handle<reco::ConversionCollection> hConversions;
    if( dataFormat_ != "AOD" ) iEvent.getByToken(hConversionsToken_,hConversions);
 
+   // HadronMatcher
+   edm::Handle<reco::GenJetCollection> genTTXJets;
+   iEvent.getByToken(genTTXJetsToken_,genTTXJets);
+   
+   edm::Handle<std::vector<int> >genTTXBHadFlavour;
+   iEvent.getByToken(genTTXBHadFlavourToken_,genTTXBHadFlavour);
+   
+   edm::Handle<std::vector<int> > genTTXBHadJetIndex;
+   iEvent.getByToken(genTTXBHadJetIndexToken_,genTTXBHadJetIndex);
+   
+   edm::Handle<std::vector<int> > genTTXBHadFromTopWeakDecay;
+   iEvent.getByToken(genTTXBHadFromTopWeakDecayToken_,genTTXBHadFromTopWeakDecay);
+   
+   edm::Handle<std::vector<reco::GenParticle> > genTTXBHadPlusMothers;
+   iEvent.getByToken(genTTXBHadPlusMothersToken_,genTTXBHadPlusMothers);
+   
+   edm::Handle<std::vector<std::vector<int> > > genTTXBHadPlusMothersIndices;
+   iEvent.getByToken(genTTXBHadPlusMothersIndicesToken_,genTTXBHadPlusMothersIndices);
+   
+   edm::Handle<std::vector<int> > genTTXBHadIndex;
+   iEvent.getByToken(genTTXBHadIndexToken_,genTTXBHadIndex);
+   
+   edm::Handle<std::vector<int> > genTTXBHadLeptonHadronIndex;
+   iEvent.getByToken(genTTXBHadLeptonHadronIndexToken_,genTTXBHadLeptonHadronIndex);
+   
+   edm::Handle<std::vector<int> > genTTXBHadLeptonViaTau;
+   iEvent.getByToken(genTTXBHadLeptonViaTauToken_, genTTXBHadLeptonViaTau);
+   
+   edm::Handle<std::vector<int> > genTTXCHadFlavour;
+   iEvent.getByToken(genTTXCHadFlavourToken_,genTTXCHadFlavour);
+   
+   edm::Handle<std::vector<int> > genTTXCHadJetIndex;
+   iEvent.getByToken(genTTXCHadJetIndexToken_,genTTXCHadJetIndex);
+   
+   edm::Handle<std::vector<int> > genTTXCHadFromTopWeakDecay;
+   iEvent.getByToken(genTTXCHadFromTopWeakDecayToken_,genTTXCHadFromTopWeakDecay);
+   
+   edm::Handle<std::vector<int> > genTTXCHadBHadronId;
+   iEvent.getByToken(genTTXCHadBHadronIdToken_,genTTXCHadBHadronId);
+   
    ftree->ev_run = iEvent.id().run();
    ftree->ev_id = iEvent.id().event();
    ftree->ev_lumi = iEvent.id().luminosityBlock();
@@ -489,6 +560,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         mc_truth->Init(*ftree);
 	mc_truth->fillGenPV(iEvent,iSetup,*ftree,genParticlesHandle);
         mc_truth->fillGenParticles(iEvent,iSetup,*ftree,genParticlesHandle);
+     }
+
+   GenTTXCategorizer *genTTX = new GenTTXCategorizer();
+   
+   if( !isData_ )
+     {
+        genTTX->Init(*ftree);
      }
    
    bool passMETFilters = 1;
@@ -853,6 +931,24 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->metNoHF_sumet = met.sumEt();
      }
 
+   if( !isData_ )
+     {
+        genTTX->Run(*ftree,
+		    genTTXJets,
+		    genTTXBHadFlavour,
+		    genTTXBHadJetIndex,
+		    genTTXBHadFromTopWeakDecay,
+		    genTTXBHadPlusMothers,
+		    genTTXBHadPlusMothersIndices,
+		    genTTXBHadIndex,
+		    genTTXBHadLeptonHadronIndex,
+		     genTTXBHadLeptonViaTau,
+		    genTTXCHadFlavour,
+		    genTTXCHadJetIndex,
+		    genTTXCHadFromTopWeakDecay,
+		    genTTXCHadBHadronId);
+     }
+   
    int nElec = electrons->size();
    int nElecPass = 0;
 
@@ -1605,18 +1701,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
      {
         const pat::Jet& jet = jets->at(ij);
 	
-        //std::cout<< "jet pt"  << jet.pt() << " jet eta: " << jet.eta() << " jet phi " << jet.phi() << "jet E " << jet.energy() << " jet mass " << jet.mass() << std::endl;
-
-        bool debug = false;
-
-        if(debug)
-	  {
-	     std::cout << "jet["       << ij                      << "]: "
-	       << " pt= "            << jet.pt()
-		 << " eta= "           << jet.eta()
-		   << " phi= "           << jet.phi()               << std::endl;
-	  }
-	
         ftree->jet_pt.push_back(jet.pt());
         ftree->jet_eta.push_back(jet.eta());
         ftree->jet_phi.push_back(jet.phi());
@@ -1631,6 +1715,33 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
 
 	ftree->jet_charge.push_back(jet.charge());
+	
+	float jetPx = jet.px();
+	float jetPy = jet.py();
+	float jetPz = jet.pz();
+
+	float sumMom = 0;
+	float sumMomCharge = 0;
+	
+	int jetNd = jet.numberOfDaughters();
+	
+	for(int idaug=0;idaug<jetNd;idaug++)
+	  {
+	     const reco::Candidate *daug = jet.daughter(idaug);
+	     int charge = daug->charge();
+	     if( charge == 0 ) continue;	     
+	     
+	     float daugPx = daug->px();
+	     float daugPy = daug->py();
+	     float daugPz = daug->pz();
+	     float prod = daugPx*jetPx + daugPy*jetPy + daugPz*jetPz;
+	     sumMom += prod;
+	     sumMomCharge += static_cast<float>(charge)*prod;
+	  }	
+	
+	float jet_chargeVec = (sumMom > 0.) ? sumMomCharge/sumMom : 0.;
+	ftree->jet_chargeVec.push_back(jet_chargeVec);
+	
         ftree->jet_chargedMultiplicity.push_back(jet.chargedMultiplicity());
         ftree->jet_neutralMultiplicity.push_back(jet.neutralMultiplicity());
         ftree->jet_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());
@@ -1639,16 +1750,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_jecFactorL1FastJet.push_back(jet.jecFactor("L1FastJet"));
         ftree->jet_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
         ftree->jet_jecFactorL3Absolute.push_back(jet.jecFactor("L3Absolute"));
-
-        if(debug)
-	  {
-	     std::cout << "jet["       << ij                      << "]: "
-	       << " Uncorrected= "         << jet.jecFactor("Uncorrected")
-		 << " L1FastJet  = "         << jet.jecFactor("L1FastJet")
-		   << " L2Relative = "         << jet.jecFactor("L2Relative")
-		     << " L3Absolute = "         << jet.jecFactor("L3Absolute")
-		       << std::endl;
-	  }
 
         ftree->jet_jetArea.push_back(jet.jetArea());
 
@@ -1806,6 +1907,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
      }
    
    delete mc_truth;
+   delete genTTX;
 }
 
 // ------------ method called when starting to processes a run  ------------

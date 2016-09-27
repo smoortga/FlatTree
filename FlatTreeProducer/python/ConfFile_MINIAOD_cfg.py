@@ -41,6 +41,8 @@ if options.isData:
 else:
     process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+    
 corName="Spring16_25nsV6_DATA"
 corTag="JetCorrectorParametersCollection_"+corName
 #if options.isData:
@@ -106,6 +108,30 @@ jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
 #  Additional modules  #
 ########################
 
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+        particles = "prunedGenParticles"
+)
+
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+         jets = "slimmedGenJets"
+)
+
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+process.matchGenBHadron = matchGenBHadron.clone(
+        genParticles = "prunedGenParticles",
+        jetFlavourInfos = "genJetFlavourInfos"
+)
+
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+process.matchGenCHadron = matchGenCHadron.clone(
+        genParticles = "prunedGenParticles",
+        jetFlavourInfos = "genJetFlavourInfos"
+)
+
 # egamma
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
@@ -124,7 +150,7 @@ for idmod in my_id_modules:
 
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
-# https://twiki.cern.ch/twiki/bin/viewauth/CMS/EGMSmearer - added unwillingly by Xavier
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/EGMSmearer
 process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
@@ -227,7 +253,21 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   hConversionsInput        = cms.InputTag("reducedEgamma","reducedConversions"),
                   puInfoInput		   = cms.InputTag("slimmedAddPileupInfo"),
 #                  puInfoInput		   = cms.InputTag("addPileupInfo"),
-                  objects                  = cms.InputTag("selectedPatTrigger")
+                  objects                  = cms.InputTag("selectedPatTrigger"),
+                  
+                  genTTXJets                    = cms.InputTag("slimmedGenJets"),
+                  genTTXBHadJetIndex            = cms.InputTag("matchGenBHadron","genBHadJetIndex"),
+                  genTTXBHadFlavour             = cms.InputTag("matchGenBHadron","genBHadFlavour"),
+                  genTTXBHadFromTopWeakDecay    = cms.InputTag("matchGenBHadron","genBHadFromTopWeakDecay"),
+                  genTTXBHadPlusMothers         = cms.InputTag("matchGenBHadron","genBHadPlusMothers"),
+                  genTTXBHadPlusMothersIndices  = cms.InputTag("matchGenBHadron","genBHadPlusMothersIndices"),
+                  genTTXBHadIndex               = cms.InputTag("matchGenBHadron","genBHadIndex"),
+                  genTTXBHadLeptonHadronIndex   = cms.InputTag("matchGenBHadron","genBHadLeptonHadronIndex"),
+                  genTTXBHadLeptonViaTau        = cms.InputTag("matchGenBHadron","genBHadLeptonViaTau"),
+                  genTTXCHadJetIndex            = cms.InputTag("matchGenCHadron","genCHadJetIndex"),
+                  genTTXCHadFlavour             = cms.InputTag("matchGenCHadron","genCHadFlavour"),
+                  genTTXCHadFromTopWeakDecay    = cms.InputTag("matchGenCHadron","genCHadFromTopWeakDecay"),
+                  genTTXCHadBHadronId           = cms.InputTag("matchGenCHadron","genCHadBHadronId")
 )
 
 ##########
@@ -235,6 +275,10 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 ##########
 
 process.p = cms.Path(
+                     process.selectedHadronsAndPartons+
+                     process.genJetFlavourInfos+
+                     process.matchGenBHadron+
+                     process.matchGenCHadron+
                      process.calibratedPatElectrons+
                      process.electronMVAValueMapProducer+
                      process.egmGsfElectronIDSequence+

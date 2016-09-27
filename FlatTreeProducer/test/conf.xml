@@ -688,6 +688,7 @@
     <var name="jet_photonEnergy" save="1"></var>
     <var name="jet_jetArea" save="1"></var>
     <var name="jet_charge" save="1"></var>
+    <var name="jet_chargeVec" save="1"></var>
     <var name="jet_chargedMultiplicity" save="1"></var>
     <var name="jet_neutralMultiplicity" save="1"></var>
     <var name="jet_chargedHadronMultiplicity" save="0"></var>
@@ -733,4 +734,5 @@
     <var name="genJet_flavour" save="1" mc="1"></var>
     <var name="gen_PVz" save="0" mc="1"></var>
     <var name="gen_all" save="1" mc="1"></var>
+    <var name="genTTX_id" save="1" mc="1"></var>
 </variables>

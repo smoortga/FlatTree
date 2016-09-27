@@ -790,6 +790,7 @@ void FlatTree::Init()
    jet_photonEnergy.clear();
 
    jet_charge.clear();
+   jet_chargeVec.clear();
    jet_chargedMultiplicity.clear();
    jet_neutralMultiplicity.clear();
    jet_chargedHadronMultiplicity.clear();
@@ -1628,6 +1629,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_photonEnergy") ) tree->Branch("jet_photonEnergy", "std::vector<float>", &jet_photonEnergy, buffersize);
 
    if( doWrite("jet_charge") ) tree->Branch("jet_charge", "std::vector<int>", &jet_charge, buffersize);
+   if( doWrite("jet_chargeVec") ) tree->Branch("jet_chargeVec", "std::vector<int>", &jet_chargeVec, buffersize);
    if( doWrite("jet_chargedMultiplicity") ) tree->Branch("jet_chargedMultiplicity", "std::vector<int>", &jet_chargedMultiplicity, buffersize);
    if( doWrite("jet_neutralMultiplicity") ) tree->Branch("jet_neutralMultiplicity", "std::vector<int>", &jet_neutralMultiplicity, buffersize);
    if( doWrite("jet_chargedHadronMultiplicity") ) tree->Branch("jet_chargedHadronMultiplicity", "std::vector<int>", &jet_chargedHadronMultiplicity, buffersize);
@@ -1704,6 +1706,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
 	tree->Branch("gen_daughter_n", "std::vector<int>", &gen_daughter_n, buffersize);
 	tree->Branch("gen_daughter_index", "std::vector<std::vector<int> >", &gen_daughter_index, buffersize);
      }
+   
+   if( doWrite("genTTX_id") ) tree->Branch("genTTX_id", &genTTX_id, "genTTX_id/I", buffersize);
 }
 
 bool FlatTree::doWrite(const std::string& name)

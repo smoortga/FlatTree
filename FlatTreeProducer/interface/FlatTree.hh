@@ -824,6 +824,7 @@ class FlatTree
    std::vector<float> jet_photonEnergy;
 
    std::vector<int> jet_charge;
+   std::vector<int> jet_chargeVec;
    std::vector<int> jet_chargedMultiplicity;
    std::vector<int> jet_neutralMultiplicity;
    std::vector<int> jet_chargedHadronMultiplicity;
@@ -895,6 +896,8 @@ class FlatTree
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
    std::vector<std::vector<int> > gen_daughter_index;
+   
+   int genTTX_id;
 };
 
 #endif
