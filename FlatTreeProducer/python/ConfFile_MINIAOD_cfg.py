@@ -27,10 +27,8 @@ process = cms.Process("FlatTree")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-
-# remove verbose from patTrigger due to missing L1 prescales for some trigger paths
-#process.MessageLogger.suppressWarning.append('patTrigger')
-#process.MessageLogger.cerr.FwkJob.limit=1
+process.MessageLogger.cerr.threshold = 'ERROR'
+process.MessageLogger.suppressWarning = cms.untracked.vstring(["JetPtMismatchAtLowPt","NullTransverseMomentum"])
 #process.MessageLogger.cerr.ERROR = cms.untracked.PSet( limit = cms.untracked.int32(0) )
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
@@ -52,7 +50,6 @@ dBFile=corName+".db"
 
 if options.isData:
     process.load("CondCore.CondDB.CondDB_cfi")
-    from CondCore.DBCommon.CondDBSetup_cfi import *
     process.jec = cms.ESSource("PoolDBESSource",
                                DBParameters = cms.PSet(
                                messageLevel = cms.untracked.int32(0)
@@ -108,29 +105,30 @@ jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
 #  Additional modules  #
 ########################
 
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+if not options.isData:
+    process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
-from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
-process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
-        particles = "prunedGenParticles"
-)
+    from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+    process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+            particles = "prunedGenParticles"
+    )
 
-from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
-process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
-         jets = "slimmedGenJets"
-)
+    from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+    process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+            jets = "slimmedGenJets"
+    )
 
-from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
-process.matchGenBHadron = matchGenBHadron.clone(
-        genParticles = "prunedGenParticles",
-        jetFlavourInfos = "genJetFlavourInfos"
-)
+    from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+    process.matchGenBHadron = matchGenBHadron.clone(
+            genParticles = "prunedGenParticles",
+            jetFlavourInfos = "genJetFlavourInfos"
+    )
 
-from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
-process.matchGenCHadron = matchGenCHadron.clone(
-        genParticles = "prunedGenParticles",
-        jetFlavourInfos = "genJetFlavourInfos"
-)
+    from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+    process.matchGenCHadron = matchGenCHadron.clone(
+            genParticles = "prunedGenParticles",
+            jetFlavourInfos = "genJetFlavourInfos"
+    )
 
 # egamma
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -175,7 +173,8 @@ from RecoMET.METProducers.testInputFiles_cff import recoMETtestInputFiles
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"), # WARNING / FIXME for test only !
     fileNames = cms.untracked.vstring(
-                '/store/mc/RunIISpring16MiniAODv1/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/50000/0ADF7BAE-0914-E611-B788-0025905A6068.root'
+              '/store/mc/RunIISpring16MiniAODv1/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/50000/0ADF7BAE-0914-E611-B788-0025905A6068.root'
+#              '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/26868D6F-4A1A-E611-8916-02163E011D33.root'
         )
 )
 
@@ -275,15 +274,11 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 ##########
 
 process.p = cms.Path(
-                     process.selectedHadronsAndPartons+
-                     process.genJetFlavourInfos+
-                     process.matchGenBHadron+
-                     process.matchGenCHadron+
-                     process.calibratedPatElectrons+
-                     process.electronMVAValueMapProducer+
-                     process.egmGsfElectronIDSequence+
-                     process.METSignificance+
-                     process.BadChargedCandidateFilter+
-                     process.BadPFMuonFilter+
-                     process.FlatTree
+                    process.calibratedPatElectrons+
+                    process.electronMVAValueMapProducer+
+                    process.egmGsfElectronIDSequence+
+                    process.METSignificance+
+                    process.BadChargedCandidateFilter+
+                    process.BadPFMuonFilter+
+                    process.FlatTree
                     )
