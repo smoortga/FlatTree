@@ -1713,8 +1713,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_SSVHE.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"));
         ftree->jet_SSVHP.push_back(jet.bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
         ftree->jet_CMVA.push_back(jet.bDiscriminator("pfCombinedMVABJetTags"));
-
-	ftree->jet_charge.push_back(jet.charge());
 	
 	float jetPx = jet.px();
 	float jetPy = jet.py();
@@ -1741,6 +1739,24 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	
 	float jet_chargeVec = (sumMom > 0.) ? sumMomCharge/sumMom : 0.;
 	ftree->jet_chargeVec.push_back(jet_chargeVec);
+
+	sumMom = 0;
+	sumMomCharge = 0;
+	
+	for(int idaug=0;idaug<jetNd;idaug++)
+	  {
+	     const reco::Candidate *daug = jet.daughter(idaug);
+	     int charge = daug->charge();
+	     if( charge == 0 ) continue;	     
+	     
+	     float daugPt = daug->pt();
+
+	     sumMom += daugPt;
+	     sumMomCharge += static_cast<float>(charge)*daugPt;
+	  }	
+	
+	float jet_charge = (sumMom > 0.) ? sumMomCharge/sumMom : 0.;
+	ftree->jet_charge.push_back(jet_charge);
 	
         ftree->jet_chargedMultiplicity.push_back(jet.chargedMultiplicity());
         ftree->jet_neutralMultiplicity.push_back(jet.neutralMultiplicity());
