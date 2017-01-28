@@ -29,59 +29,67 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.MessageLogger.cerr.threshold = 'ERROR'
 process.MessageLogger.suppressWarning = cms.untracked.vstring(["JetPtMismatchAtLowPt","NullTransverseMomentum"])
-#process.MessageLogger.cerr.ERROR = cms.untracked.PSet( limit = cms.untracked.int32(0) )
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 if options.isData:
-    process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
-else:
-    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+    process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v5'
+else:    
+    process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
     
-corName="Spring16_25nsV6_DATA"
+corName="Summer16_23Sep2016V3_MC"
 corTag="JetCorrectorParametersCollection_"+corName
-#if options.isData:
-#    corName="Fall15_25nsV2_DATA"
-#    corTag="JetCorrectorParametersCollection_"+corName
+if options.isData:
+    corName="Summer16_23Sep2016AllV3_DATA"
+    corTag="JetCorrectorParametersCollection_"+corName
 dBFile=corName+".db"
 
-if options.isData:
-    process.load("CondCore.CondDB.CondDB_cfi")
-    process.jec = cms.ESSource("PoolDBESSource",
-                               DBParameters = cms.PSet(
-                               messageLevel = cms.untracked.int32(0)
-                               ),
-                               timetype = cms.string('runnumber'),
-                               toGet = cms.VPSet(
-                               cms.PSet(
-                                        record = cms.string('JetCorrectionsRecord'),
-                                        tag    = cms.string(corTag+"_AK4PF"),
-                                        label  = cms.untracked.string('AK4PF')
-                                        ),
-                               cms.PSet(
-                                        record = cms.string('JetCorrectionsRecord'),
-                                        tag    = cms.string(corTag+"_AK4PFchs"),
-                                        label  = cms.untracked.string('AK4PFchs')
-                                        ),
-                               cms.PSet(
-                                        record = cms.string('JetCorrectionsRecord'),
-                                        tag    = cms.string(corTag+"_AK8PF"),
-                                        label  = cms.untracked.string('AK8PF')
-                                        ),
-                               cms.PSet(
-                                        record = cms.string('JetCorrectionsRecord'),
-                                        tag    = cms.string(corTag+"_AK8PFchs"),
-                                        label  = cms.untracked.string('AK8PFchs')
-                                        ),
-                               ),
-                               connect = cms.string("sqlite_file:"+dBFile)
-    )
-    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')                           
+process.load("CondCore.CondDB.CondDB_cfi")
+process.jec = cms.ESSource("PoolDBESSource",
+                           DBParameters = cms.PSet(
+                           messageLevel = cms.untracked.int32(0)
+                           ),
+                           timetype = cms.string('runnumber'),
+                           toGet = cms.VPSet(
+                           cms.PSet(
+                                    record = cms.string('JetCorrectionsRecord'),
+                                    tag    = cms.string(corTag+"_AK4PF"),
+                                    label  = cms.untracked.string('AK4PF')
+                                    ),
+                           cms.PSet(
+                                    record = cms.string('JetCorrectionsRecord'),
+                                    tag    = cms.string(corTag+"_AK4PFchs"),
+                                    label  = cms.untracked.string('AK4PFchs')
+                                    ),
+                           cms.PSet(
+                                    record = cms.string('JetCorrectionsRecord'),
+                                    tag    = cms.string(corTag+"_AK8PF"),
+                                    label  = cms.untracked.string('AK8PF')
+                                    ),
+                           cms.PSet(
+                                    record = cms.string('JetCorrectionsRecord'),
+                                    tag    = cms.string(corTag+"_AK8PFchs"),
+                                    label  = cms.untracked.string('AK8PFchs')
+                                    ),
+                           ),
+                           connect = cms.string("sqlite_file:"+dBFile)
+)
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')                           
 
 process.load('Configuration.StandardSequences.Services_cff')
+if not options.isData:
+    process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                                           calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+                                           engineName = cms.untracked.string('TRandom3'),
+                                           ),
+                                           calibratedPatPhotons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
+                                           engineName = cms.untracked.string('TRandom3'),
+                                           ),
+    )
+
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 
@@ -136,9 +144,9 @@ switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
 
 # https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
 # https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
+
 my_id_modules = [
-'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
-'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
+'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff'
 ]
@@ -173,8 +181,8 @@ from RecoMET.METProducers.testInputFiles_cff import recoMETtestInputFiles
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"), # WARNING / FIXME for test only !
     fileNames = cms.untracked.vstring(
-              '/store/mc/RunIISpring16MiniAODv1/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/50000/0ADF7BAE-0914-E611-B788-0025905A6068.root'
-#              '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/26868D6F-4A1A-E611-8916-02163E011D33.root'
+#    '/store/data/Run2016B/DoubleEG/MINIAOD/23Sep2016-v3/00000/68C5F6A4-1999-E611-B338-02163E013B09.root'
+    '/store/mc/RunIISummer16MiniAODv2/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/110000/0015BB42-9BAA-E611-8C7F-0CC47A7E0196.root'
         )
 )
 
@@ -211,10 +219,14 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   #electronPATInput         = cms.InputTag("slimmedElectrons"),
                   electronPATInput         = cms.InputTag("calibratedPatElectrons"),
 
-                  eleVetoCBIdMap           = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),
-                  eleLooseCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
-                  eleMediumCBIdMap         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
-                  eleTightCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
+#                  eleVetoCBIdMap           = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),
+#                  eleLooseCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
+#                  eleMediumCBIdMap         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
+#                  eleTightCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
+                  eleVetoCBIdMap           = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
+                  eleLooseCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
+                  eleMediumCBIdMap         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
+                  eleTightCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight"),
                   eleHEEPCBIdMap           = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
 
                   eleMediumMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp90"),
@@ -229,8 +241,11 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 #                  "*"
                   "HLT_Ele35_WPLoose_Gsf_v*",
                   "HLT_Ele27_WPTight_Gsf_v*",
+                  "HLT_Ele32_eta2p1_WPTight_Gsf_v*",
                   "HLT_IsoMu22_v*",
-                  "HLT_IsoTkMu22_v*"
+                  "HLT_IsoTkMu22_v*",
+                  "HLT_IsoMu24_v*",
+                  "HLT_IsoTkMu24_v*"
                   ),
                   
                   muonInput                = cms.InputTag("slimmedMuons"),

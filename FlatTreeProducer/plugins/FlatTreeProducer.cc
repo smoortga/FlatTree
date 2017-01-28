@@ -185,6 +185,7 @@ hltPrescale_(iConfig,consumesCollector(),*this)
    isData_               = iConfig.getParameter<bool>("isData");
    applyMETFilters_      = iConfig.getParameter<bool>("applyMETFilters");
    triggerBits_          = consumes<edm::TriggerResults>(edm::InputTag(std::string("TriggerResults"),std::string(""),std::string("HLT")));
+//   triggerBits_          = consumes<edm::TriggerResults>(edm::InputTag(std::string("TriggerResults"),std::string(""),std::string("HLT2")));
    triggerBitsPAT_       = consumes<edm::TriggerResults>(edm::InputTag(std::string("TriggerResults"),std::string(""),std::string("PAT")));
    triggerObjects_       = consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects"));
    triggerPrescales_     = consumes<pat::PackedTriggerPrescales>(edm::InputTag(std::string("patTrigger")));
@@ -789,7 +790,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->pv_yError = primVtx->yError();
         ftree->pv_zError = primVtx->zError();
 
-        ftree->pv_ndof = primVtx->chi2();
+        ftree->pv_chi2 = primVtx->chi2(); //FIXME BUG ndof->chi2
         ftree->pv_ndof = primVtx->ndof();
         ftree->pv_rho = primVtx->position().Rho();
         ftree->pv_isFake = primVtx->isFake();
@@ -1804,13 +1805,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         float NHF = jet.neutralHadronEnergyFraction();
         float NEMF = jet.neutralEmEnergyFraction();
         float CHF = jet.chargedHadronEnergyFraction();
-        float MUF = jet.muonEnergyFraction();
+//        float MUF = jet.muonEnergyFraction();
         float CEMF = jet.chargedEmEnergyFraction();
         float NumConst = jet.chargedMultiplicity()+jet.neutralMultiplicity();
         float CHM = jet.chargedMultiplicity();
         float eta = jet.eta();
-        bool looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4);
-        bool tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4);
+	bool looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4);
+        bool tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || fabs(eta)>2.4);
 
         ftree->jet_neutralHadronEnergyFraction.push_back(jet.neutralHadronEnergyFraction());
         ftree->jet_neutralEmEnergyFraction.push_back(jet.neutralEmEnergyFraction());
@@ -1916,7 +1917,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
    
    if( (applyMETFilters_ && passMETFilters) || !applyMETFilters_ ) // MET filters
      {
-	if( nElecPass+nMuonPass > 0 ) // skim
+//	if( nElecPass+nMuonPass > 0 ) // skim
 	  {	     
 	     ftree->tree->Fill();
 	  }
@@ -1947,7 +1948,7 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
     jecUnc = new JetCorrectionUncertainty(JetCorPar);*/
 
    const char* cmssw_base = std::getenv("CMSSW_BASE");
-   std::string JECUncertaintyPath = std::string(cmssw_base)+"/src/FlatTree/FlatTreeProducer/data/jecFiles/Fall15_25nsV2_MC/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt";
+   std::string JECUncertaintyPath = std::string(cmssw_base)+"/src/FlatTree/FlatTreeProducer/data/jecFiles/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt";
    jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
 }
 
