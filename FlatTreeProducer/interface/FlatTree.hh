@@ -136,7 +136,7 @@ class FlatTree
    float pv_zError;
 
    float pv_chi2;
-   int   pv_ndof;
+   float pv_ndof;
    float pv_rho;
    int   pv_isFake;
 

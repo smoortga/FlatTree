@@ -968,7 +968,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("pv_zError") ) tree->Branch("pv_zError", &pv_zError, "pv_zError/F", buffersize);
 
    if( doWrite("pv_chi2") ) tree->Branch("pv_chi2", &pv_chi2, "pv_chi2/F", buffersize);
-   if( doWrite("pv_ndof") ) tree->Branch("pv_ndof", &pv_ndof, "pv_ndof/I", buffersize);
+   if( doWrite("pv_ndof") ) tree->Branch("pv_ndof", &pv_ndof, "pv_ndof/F", buffersize);
    if( doWrite("pv_rho") ) tree->Branch("pv_rho", &pv_rho, "pv_rho/F", buffersize);
    if( doWrite("pv_isFake") ) tree->Branch("pv_isFake", &pv_isFake, "pv_isFake/I", buffersize);
 
