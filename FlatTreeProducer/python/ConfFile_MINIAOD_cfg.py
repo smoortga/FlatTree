@@ -239,13 +239,23 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   
                   filterTriggerNames       = cms.untracked.vstring(
 #                  "*"
-                  "HLT_Ele35_WPLoose_Gsf_v*",
-                  "HLT_Ele27_WPTight_Gsf_v*",
-                  "HLT_Ele32_eta2p1_WPTight_Gsf_v*",
-                  "HLT_IsoMu22_v*",
-                  "HLT_IsoTkMu22_v*",
-                  "HLT_IsoMu24_v*",
-                  "HLT_IsoTkMu24_v*"
+                  # "HLT_Ele35_WPLoose_Gsf_v*",
+#                   "HLT_Ele27_WPTight_Gsf_v*",
+#                   "HLT_Ele32_eta2p1_WPTight_Gsf_v*",
+#                   "HLT_IsoMu22_v*",
+#                   "HLT_IsoTkMu22_v*",
+#                   "HLT_IsoMu24_v*",
+#                   "HLT_IsoTkMu24_v*"
+                    #MuonEG
+                    "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                    "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                    "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
+                    "HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
+                    "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
+                    #DoubleEG
+                    "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
+                    #DoubleMuon
+                    "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*"
                   ),
                   
                   muonInput                = cms.InputTag("slimmedMuons"),

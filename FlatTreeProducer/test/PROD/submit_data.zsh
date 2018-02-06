@@ -1,8 +1,8 @@
 #!/bin/env zsh
 
-slist="samples_MC.txt"
+slist="samples_Data.txt"
 pset="crabConfigTemplate.py"
-ver="TestTriggers_ttbbAnalysis_25012018"
+ver="TestTriggers_ttbbAnalysis_data_05022018"
 prodv="/store/user/smoortga/Analysis/FlatTree/${ver}/"
 
 rm -f crabConfig.py*
