@@ -317,9 +317,9 @@
     <var name="el_looseCBId" save="1"></var>
     <var name="el_mediumCBId" save="1"></var>
     <var name="el_tightCBId" save="1"></var>
-    <var name="el_heepCBId" save="0"></var>
-    <var name="el_mediumMVAId" save="0"></var>
-    <var name="el_tightMVAId" save="0"></var>
+    <var name="el_heepCBId" save="1"></var>
+    <var name="el_mediumMVAId" save="1"></var>
+    <var name="el_tightMVAId" save="1"></var>
     <var name="el_hasMatchedConversion" save="0"></var>
     <var name="el_expectedMissingInnerHits" save="0"></var>
     <var name="el_hasMCMatch" save="0" mc="1"></var>
